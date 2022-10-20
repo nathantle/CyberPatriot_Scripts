@@ -16,7 +16,7 @@ echo net user username7 Cyb3rP@triot >> %UserProfile%\Desktop\_setpasswords.bat
 echo net user username8 Cyb3rP@triot >> %UserProfile%\Desktop\_setpasswords.bat
 echo net user username9 Cyb3rP@triot >> %UserProfile%\Desktop\_setpasswords.bat
 echo net user username10 Cyb3rP@triot >> %UserProfile%\Desktop\_setpasswords.bat
-echo  rem >> %UserProfile%\Desktop\_setpassword.bat
+echo rem >> %UserProfile%\Desktop\_setpassword.bat
 echo net user username11 /delete >> %UserProfile%\Destkop\_setpasswords.bat
 echo net user username12 /delete >> %UserProfile%\Destkop\_setpasswords.bat
 echo net user username13 /delete >> %UserProfile%\Destkop\_setpasswords.bat

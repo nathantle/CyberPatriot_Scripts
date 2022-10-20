@@ -17,13 +17,16 @@ echo net user username8 Cyb3rP@triot >> %UserProfile%\Desktop\_setpasswords.bat
 echo net user username9 Cyb3rP@triot >> %UserProfile%\Desktop\_setpasswords.bat
 echo net user username10 Cyb3rP@triot >> %UserProfile%\Desktop\_setpasswords.bat
 echo rem >> %UserProfile%\Desktop\_setpassword.bat
-echo net user username11 /delete >> %UserProfile%\Destkop\_setpasswords.bat
-echo net user username12 /delete >> %UserProfile%\Destkop\_setpasswords.bat
-echo net user username13 /delete >> %UserProfile%\Destkop\_setpasswords.bat
-echo net user username14 /delete >> %UserProfile%\Destkop\_setpasswords.bat
+
+echo echo on > %UserProfile%\Desktop\_delUsers.bat
+echo net user username11 /delete >> %UserProfile%\Destkop\_delUsers.bat
+echo net user username12 /delete >> %UserProfile%\Destkop\_delUsers.bat
+echo net user username13 /delete >> %UserProfile%\Destkop\_delUsers.bat
+echo net user username14 /delete >> %UserProfile%\Destkop\_delUsers.bat
 echo pause >> %UserProfile%\Desktop\_setpasswords.bat
 
 notepad %UserProfile%\Desktop\_setPasswords.bat
 echo.
 pause
-call %UserProfile%\Desktop\_setpassword.bat
+call %UserProfile%\Desktop\_setpasswords.bat
+call %userProfile%\Desktop\_delUsers.bat

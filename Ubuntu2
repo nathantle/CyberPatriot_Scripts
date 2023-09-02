@@ -1,16 +1,7 @@
 import subprocess
 
-def change_passwords():
-    # Get a list of all users
-    users_process = subprocess.Popen(['cut', '-d:', '-f1', '/etc/passwd'], stdout=subprocess.PIPE)
-    output, _ = users_process.communicate()
-    users = output.decode().split('\n')[:-1]
-
-    # Iterate over each user and change their password
+def change_passwords(users, new_password):
     for user in users:
-        # Prompt for a new password
-        new_password = input(f"Enter a new password for user '{user}': ")
-
         # Change the password using the 'passwd' command
         passwd_process = subprocess.Popen(['sudo', 'passwd', user], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         passwd_process.communicate(input=f'{new_password}\n{new_password}\n'.encode())
@@ -21,5 +12,8 @@ def change_passwords():
         else:
             print(f"Failed to change password for user '{user}'")
 
-# Call the function to change passwords for all users
-change_passwords()
+# Example usage
+user_list = ['user1', 'user2', 'user3']
+new_password = 'new_password'
+
+change_passwords(user_list, new_password)

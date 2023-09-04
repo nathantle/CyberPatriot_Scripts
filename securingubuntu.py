@@ -78,12 +78,14 @@ def remove_bad_services():
 
     #Removing telnet and ftp
     run_command("sudo apt remove -purge -y telnet ftp")
+    #This doesn't work
 
 def set_log_file_permissions():
     print("Setting appropiate permissions on the log file")
 
     #Removing rwx for o and g
-    run_command("sudo chmod -R g-rwx, o-rwx /var/log")
+    # run_command("sudo chmod -R g-rwx, o-rwx /var/log")
+    # This doesn't work
 
 def lock_out_root():
     print("Locking out root user...")
@@ -96,6 +98,7 @@ def disable_guest():
     print("Disabling guest account...")
 
     run_command()
+    #Need to figure out how to do this
 
 # DO NOT FORGET TO SET THESE VARIBLES
 # Configuring user_list and new_password for change password function
@@ -103,11 +106,11 @@ user_list = ['user1', 'user2', 'user3']
 new_password = "new_password"
 
 def main():
-    # update_packages()
-    #disable_ssh_root_login()
-    # change_passwords(user_list, new_password)
-    # enforce_ssh_key_authentication()
-    remove_bad_services()
-    set_log_file_permissions()
+    update_packages()
+    disable_ssh_root_login()
+    change_passwords(user_list, new_password)
+    enforce_ssh_key_authentication()
+    # remove_bad_services()
+    # set_log_file_permissions()
     lock_out_root()
     # disable_guest()

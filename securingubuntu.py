@@ -21,7 +21,7 @@ def configure_firewall():
 
     print("Firewall configured")
 
-def disable_ssh_root_login():
+def secure_ssh():
     print("Disabling SSH root login...")
 
     #Back up SSH config file
@@ -48,7 +48,6 @@ def disable_ssh_root_login():
 
     print("SSH root login disabled.")
     
-def enforce_ssh_key_authentication():
     print("Enforcing SSH key authentication...")
 
     #Disable password authentication in SSH server configuration
@@ -100,6 +99,9 @@ def disable_guest():
     run_command()
     #Need to figure out how to do this
 
+def eat_users():
+    print("Eating users...")
+
 # DO NOT FORGET TO SET THESE VARIBLES
 # Configuring user_list and new_password for change password function
 user_list = ['user1', 'user2', 'user3']
@@ -107,9 +109,8 @@ new_password = "new_password"
 
 def main():
     update_packages()
-    disable_ssh_root_login()
+    secure_ssh()
     change_passwords(user_list, new_password)
-    enforce_ssh_key_authentication()
     # remove_bad_services()
     # set_log_file_permissions()
     lock_out_root()

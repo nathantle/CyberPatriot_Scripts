@@ -3,7 +3,7 @@ import subprocess
 def run_command(command):
     subprocess.run(command, shell=True, check=True)
 
-def update_packages():
+def basics(users, new_passsword):
     print("Updating packages...")
 
     run_command("sudo apt update -y")
@@ -12,7 +12,6 @@ def update_packages():
 
     print("Updated packages.")
 
-def configure_firewall():
     print("Configuring firewall...")
 
     run_command("sudo ufw enable")
@@ -21,7 +20,26 @@ def configure_firewall():
 
     print("Firewall configured")
 
-def secure_ssh():
+    print("Deleting unauthorized users")
+    
+
+    print("Changing userpasswords...")
+
+    for user in users:
+        #Change the password using passwd
+
+        if(user not in ["root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd"]):
+            passwd_process = subprocess.Popen(['sudo', 'passwd', user], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+            passwd_process.communicate(input=f'{new_password}\n{new_password}\n'.encode())
+
+            # Check the exit code to determine if the password change was successful
+            if passwd_process.returncode == 0:
+                print(f"Password changed successfully for user '{user}'")
+            else:
+                print(f"Failed to change password for user '{user}'")
+
+
+def disable_ssh_root_login():
     print("Disabling SSH root login...")
 
     #Back up SSH config file
@@ -48,6 +66,7 @@ def secure_ssh():
 
     print("SSH root login disabled.")
     
+def enforce_ssh_key_authentication():
     print("Enforcing SSH key authentication...")
 
     #Disable password authentication in SSH server configuration
@@ -58,33 +77,17 @@ def secure_ssh():
 
     print("SSH key based authentication has been enforced.")
 
-def change_passwords(users, new_password):
-    print("Changing passwords...")
-
-    for user in users:
-        #Change the password using passwd
-        passwd_process = subprocess.Popen(['sudo', 'passwd', user], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        passwd_process.communicate(input=f'{new_password}\n{new_password}\n'.encode())
-
-        # Check the exit code to determine if the password change was successful
-        if passwd_process.returncode == 0:
-            print(f"Password changed successfully for user '{user}'")
-        else:
-            print(f"Failed to change password for user '{user}'")
-
 def remove_bad_services():
     print("Removing bad services...")
 
     #Removing telnet and ftp
     run_command("sudo apt remove -purge -y telnet ftp")
-    #This doesn't work
 
 def set_log_file_permissions():
     print("Setting appropiate permissions on the log file")
 
     #Removing rwx for o and g
-    # run_command("sudo chmod -R g-rwx, o-rwx /var/log")
-    # This doesn't work
+    run_command("sudo chmod -R g-rwx, o-rwx /var/log")
 
 def lock_out_root():
     print("Locking out root user...")
@@ -94,13 +97,17 @@ def lock_out_root():
     print("Root user locked out")
 
 def disable_guest():
-    print("Disabling guest account...")
-
-    run_command()
-    #Need to figure out how to do this
-
-def eat_users():
-    print("Eating users...")
+    print("""
+    You will need to disable guest session manually. "" means to do the command
+    "sudo systemctl status display-manager"
+    If the main PID is gdm, remove gdm3 and install lightdm
+    If lightdm, continue.
+    "cd /usr/share/lightdm/lightdm.conf.d"
+    "ls -la"
+    If there is a no guest file, 
+    "sudo gedit [filename]"
+    add allow-guest=true
+    """)
 
 # DO NOT FORGET TO SET THESE VARIBLES
 # Configuring user_list and new_password for change password function
@@ -108,10 +115,17 @@ user_list = ['user1', 'user2', 'user3']
 new_password = "new_password"
 
 def main():
-    update_packages()
-    secure_ssh()
-    change_passwords(user_list, new_password)
-    # remove_bad_services()
-    # set_log_file_permissions()
+    # update_packages()
+    #disable_ssh_root_login()
+    # change_passwords(user_list, new_password)
+    # enforce_ssh_key_authentication()
+    basics()
+    remove_bad_services()
+    set_log_file_permissions()
     lock_out_root()
     # disable_guest()
+
+    print("System secured.")
+
+if __name__ == "__main__":
+    main()

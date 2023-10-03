@@ -3,6 +3,17 @@ import subprocess
 def run_command(command):
     subprocess.run(command, shell=True, check=True)
 
+def get_user_list():
+    command = "cut -d: -f1 /etc/passwd"
+    process = subprocess.Popen(run_command("cut -d: -f1 /etc/passwd"), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = process.communicate()
+    if process.returncode == 0:
+        user_list = output.decode().splitlines()
+        return user_list
+    else:
+        print(f"Error: {error.decode()}")
+        return []
+
 def basics(users, new_passsword):
     print("Updating packages...")
 
@@ -21,13 +32,12 @@ def basics(users, new_passsword):
     print("Firewall configured")
 
     print("Deleting unauthorized users")
-    
 
-    print("Changing userpasswords...")
+    print("Changing user passwords...")
 
-    for user in users:
+    for user in get_user_list():
         #Change the password using passwd
-
+        
         if(user not in ["root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd"]):
             passwd_process = subprocess.Popen(['sudo', 'passwd', user], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
             passwd_process.communicate(input=f'{new_password}\n{new_password}\n'.encode())
@@ -37,7 +47,6 @@ def basics(users, new_passsword):
                 print(f"Password changed successfully for user '{user}'")
             else:
                 print(f"Failed to change password for user '{user}'")
-
 
 def disable_ssh_root_login():
     print("Disabling SSH root login...")

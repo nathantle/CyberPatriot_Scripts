@@ -5,10 +5,12 @@ def run_command(command):
 
 def get_user_list():
     command = "cut -d: -f1 /etc/passwd"
-    process = subprocess.Popen(run_command("cut -d: -f1 /etc/passwd"), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = process.communicate()
     if process.returncode == 0:
         user_list = output.decode().splitlines()
+        default_user = input("What is the default root user found in the README file on the desktop?").lower()
+        user_list.remove(default_user)
         return user_list
     else:
         print(f"Error: {error.decode()}")
@@ -37,8 +39,8 @@ def basics(users, new_passsword):
 
     for user in get_user_list():
         #Change the password using passwd
-        
-        if(user not in ["root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd"]):
+
+        if(user not in ["root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd", "systemd-network", "systemd-oom", "tcpdump"]):
             passwd_process = subprocess.Popen(['sudo', 'passwd', user], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
             passwd_process.communicate(input=f'{new_password}\n{new_password}\n'.encode())
 
@@ -90,7 +92,7 @@ def remove_bad_services():
     print("Removing bad services...")
 
     #Removing telnet and ftp
-    run_command("sudo apt remove -purge -y telnet ftp")
+    run_command("sudo apt remove -purge -y telnet ftp telnetd vsftpd")
 
 def set_log_file_permissions():
     print("Setting appropiate permissions on the log file")
@@ -118,17 +120,14 @@ def disable_guest():
     add allow-guest=true
     """)
 
-# DO NOT FORGET TO SET THESE VARIBLES
-# Configuring user_list and new_password for change password function
-user_list = ['user1', 'user2', 'user3']
-new_password = "new_password"
+new_password = "Cyb3rP@triot24!"
 
 def main():
     # update_packages()
     #disable_ssh_root_login()
     # change_passwords(user_list, new_password)
     # enforce_ssh_key_authentication()
-    basics()
+    basics(get_user_list(), new_password)
     remove_bad_services()
     set_log_file_permissions()
     lock_out_root()

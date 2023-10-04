@@ -24,7 +24,6 @@ def basics(users, new_passsword):
     run_command("sudo apt autoremove -y")
 
     print("Updated packages.")
-
     print("Configuring firewall...")
 
     run_command("sudo ufw enable")
@@ -32,14 +31,27 @@ def basics(users, new_passsword):
     run_command("sudo ufw status verbose")
 
     print("Firewall configured")
-
     print("Deleting unauthorized users")
+
+    done = False
+
+    admins = []
+
+    while(done == False):
+        admin = input("Enter authorized admin: ")
+        finished = input("Are there any more?(y/n)").lower()
+
+        admins.append(admin)
+
+        if(finished == "y"):
+            done = True
+        elif(finished == "n"):
+            done = False
 
     print("Changing user passwords...")
 
     for user in get_user_list():
         #Change the password using passwd
-
         if(user not in ["root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd", "systemd-network", "systemd-oom", "tcpdump"]):
             passwd_process = subprocess.Popen(['sudo', 'passwd', user], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
             passwd_process.communicate(input=f'{new_password}\n{new_password}\n'.encode())
@@ -50,7 +62,21 @@ def basics(users, new_passsword):
             else:
                 print(f"Failed to change password for user '{user}'")
 
-def disable_ssh_root_login():
+    print("Locking out root user...")
+
+    run_command("sudo passwd -l root")
+
+    print("Root user locked out")
+    print("Removing bad services...")
+
+    #Removing telnet and ftp
+    run_command("sudo apt remove -purge -y telnet ftp telnetd vsftpd")
+    print("Bad services removed")
+
+def ssh():
+
+    run_command("sudo apt install ssh")
+
     print("Disabling SSH root login...")
 
     #Back up SSH config file
@@ -76,8 +102,7 @@ def disable_ssh_root_login():
     run_command("sudo service ssh restart")
 
     print("SSH root login disabled.")
-    
-def enforce_ssh_key_authentication():
+
     print("Enforcing SSH key authentication...")
 
     #Disable password authentication in SSH server configuration
@@ -88,24 +113,11 @@ def enforce_ssh_key_authentication():
 
     print("SSH key based authentication has been enforced.")
 
-def remove_bad_services():
-    print("Removing bad services...")
-
-    #Removing telnet and ftp
-    run_command("sudo apt remove -purge -y telnet ftp telnetd vsftpd")
-
 def set_log_file_permissions():
     print("Setting appropiate permissions on the log file")
 
     #Removing rwx for o and g
     run_command("sudo chmod -R g-rwx, o-rwx /var/log")
-
-def lock_out_root():
-    print("Locking out root user...")
-
-    run_command("sudo passwd -l root")
-
-    print("Root user locked out")
 
 def disable_guest():
     print("""
@@ -125,12 +137,10 @@ new_password = "Cyb3rP@triot24!"
 def main():
     # update_packages()
     #disable_ssh_root_login()
-    # change_passwords(user_list, new_password)
-    # enforce_ssh_key_authentication()
+    # enforce_ssh_key_authentication()'
     basics(get_user_list(), new_password)
-    remove_bad_services()
-    set_log_file_permissions()
-    lock_out_root()
+    ssh()
+    # set_log_file_permissions()
     # disable_guest()
 
     print("System secured.")

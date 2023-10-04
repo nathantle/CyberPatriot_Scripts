@@ -70,7 +70,7 @@ def basics(users, new_passsword):
     print("Removing bad services...")
 
     #Removing telnet and ftp
-    run_command("sudo apt remove -purge -y telnet ftp telnetd vsftpd")
+    run_command("sudo apt purge -y telnet ftp telnetd vsftpd")
     print("Bad services removed")
 
 def ssh():

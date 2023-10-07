@@ -1,5 +1,7 @@
 import subprocess
 
+import ubBasics
+
 def run_command(command):
     subprocess.run(command, shell=True, check=True)
 
@@ -15,6 +17,7 @@ def get_user_list():
     else:
         print(f"Error: {error.decode()}")
         return []
+    
 def get_admins():
     command = "grep '^sudo:.*$' /etc/group | cut -d: -f4"
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -175,8 +178,7 @@ def main():
     # update_packages()
     #disable_ssh_root_login()
     # enforce_ssh_key_authentication()'
-    basics(get_user_list(), new_password)
-    ssh()
+    ubBasics.users()
     # set_log_file_permissions()
     # disable_guest()
 

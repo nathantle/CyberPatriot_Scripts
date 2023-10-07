@@ -104,3 +104,5 @@ def users():
         else:
             print(f"Failed to change password for user '{user}'")
 
+    for admn in admins:
+        print(admn)

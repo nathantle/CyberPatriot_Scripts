@@ -15,6 +15,18 @@ def get_user_list():
     else:
         print(f"Error: {error.decode()}")
         return []
+def get_admins():
+    command = "grep '^sudo:.*$' /etc/group | cut -d: -f4"
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, _ = process.communicate()
+    admins = output.decode().strip().split(",")
+    return admins
+def get_lusers():
+    allusers = get_user_list()
+    sudousers = get_admins()
+    lusers = [user for user in allusers if user not in sudousers]
+
+    return lusers
 
 def basics(users, new_passsword):
     print("Updating packages...")
@@ -31,22 +43,47 @@ def basics(users, new_passsword):
     run_command("sudo ufw status verbose")
 
     print("Firewall configured")
-    print("Deleting unauthorized users")
+    print("Setting correct user permissions")
 
     done = False
 
-    admins = []
+    authadmins = []
+    authusers = []
+
+    while(done == False):
+        user = input("Enter authorized user: ")
+        finished = input("Are there any more?(y/n) ").lower()
+
+        authusers.append(user)
+
+        if(finished == "y"):
+            done = False
+        elif(finished == "n"):
+            done = True
+    done = False
+
+    currentlusers = get_lusers()
+
+    for currentluser in currentlusers:
+        if(currentluser not in authusers):
+            run_command(f"sudo deluser {currentluser}")
 
     while(done == False):
         admin = input("Enter authorized admin: ")
-        finished = input("Are there any more?(y/n)").lower()
+        finished = input("Are there any more?(y/n) ").lower()
 
-        admins.append(admin)
+        authadmins.append(admin)
 
         if(finished == "y"):
-            done = True
-        elif(finished == "n"):
             done = False
+        elif(finished == "n"):
+            done = True
+    
+    current_admins = get_admins()
+
+    for current_admin in current_admins:
+        if(current_admin not in authadmins):
+            run_command(f"sudo deluser {current_admin}")
 
     print("Changing user passwords...")
 
@@ -70,7 +107,7 @@ def basics(users, new_passsword):
     print("Removing bad services...")
 
     #Removing telnet and ftp
-    run_command("sudo apt purge -y telnet ftp telnetd vsftpd")
+    run_command("sudo apt remove -purge -y telnet ftp telnetd vsftpd")
     print("Bad services removed")
 
 def ssh():

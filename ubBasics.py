@@ -10,7 +10,7 @@ def updates():
     run_command("sudo ufw enable")
     run_command("sudo ufw allow ssh")
 
-def ssh():
+def services():
     run_command("sudo apt install ssh")
 
     print("Disabling SSH root login...")
@@ -48,6 +48,30 @@ def ssh():
     run_command("sudo systemctl restart ssh")
 
     print("SSH key based authentication has been enforced.")
+
+    run_command("sudo apt purge -y telnet ftp telnetd vsftpd")
+
+    command = "systemctl list-units --type=service --state=running --no-pager --plain --no-legend"
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, _ = process.communicate()
+
+    services = output.decode().strip().split("\n")
+
+    for service in services:
+        print(service)
+
+    anymoreservices == False
+
+    while anymoreservices == False:
+        srvc = input("Enter a desired service to delete: ")
+        moreservices = input("Done?(y/n)")
+
+        run_command(f"sudo systemctl stop {srvc}")
+        run_command(f"sudo systemctl disable {srvc}")
+        if moreservices == "y":
+            anymoreservices == True
+        else:
+            anymoreservices == False
 
 def users():
     done = False
@@ -92,7 +116,7 @@ def users():
     admins.remove(defaultuser)
 
     for user in usrlist:
-        if(user not in authusrs + authadmns):
+        if user not in authusrs + authadmns:
             run_command(f"sudo deluser {user}")
         newpass = "Cyb3rP@triot24!"
         passwd_process = subprocess.Popen(['sudo', 'passwd', user], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -103,6 +127,13 @@ def users():
             print(f"Password changed successfully for user '{user}'")
         else:
             print(f"Failed to change password for user '{user}'")
+        process = subprocess.Popen(f"getent group sudo | cut -d: -f4 | tr ',' '\n' | grep -w {user}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, _ = process.communicate()
+        output = output.decode().strip()
+        sudoer = bool(output)
 
-    for admn in admins:
-        print(admn)
+        if sudoer and user not in authadmns:
+            run_command(f"sudo adduser {user} sudo")
+        elif not sudoer and user in authadmns:
+             run_command(f"sudo deluser {user} sudo")
+    run_command("sudo passwd -l root")

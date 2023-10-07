@@ -97,6 +97,7 @@ def users():
         else:
             done = False
     
+
     process = subprocess.Popen("cut -d: -f1 /etc/passwd", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = process.communicate()
     if process.returncode == 0:
@@ -127,13 +128,20 @@ def users():
             print(f"Password changed successfully for user '{user}'")
         else:
             print(f"Failed to change password for user '{user}'")
-        process = subprocess.Popen(f"getent group sudo | cut -d: -f4 | tr ',' '\n' | grep -w {user}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
+        #Setting correct user permissions
+        process = subprocess.Popen(f"sudo groups {user}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, _ = process.communicate()
-        output = output.decode().strip()
-        sudoer = bool(output)
+        groups = output.decode().strip().split()
+
+        if "sudo" in groups:
+            sudoer = True
+        else:
+            sudoer = False
 
         if sudoer and user not in authadmns:
             run_command(f"sudo adduser {user} sudo")
         elif not sudoer and user in authadmns:
              run_command(f"sudo deluser {user} sudo")
+             
     run_command("sudo passwd -l root")

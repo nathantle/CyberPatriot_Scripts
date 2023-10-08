@@ -142,6 +142,11 @@ def users():
         if sudoer and user not in authadmns:
             run_command(f"sudo adduser {user} sudo")
         elif not sudoer and user in authadmns:
-             run_command(f"sudo deluser {user} sudo")
-             
+            run_command(f"sudo deluser {user} sudo")
+
     run_command("sudo passwd -l root")
+
+def all():
+    updates()
+    services()
+    users()

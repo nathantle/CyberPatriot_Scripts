@@ -23,11 +23,7 @@ def disable_guest():
     """)
 
 def main():
-    ubBasics.updates()
-    ubBasics.services()
-    ubBasics.users()
-    # set_log_file_permissions()
-    # disable_guest()
+    ubBasics.all()
 
     print("System secured.")
 

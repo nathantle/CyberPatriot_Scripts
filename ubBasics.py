@@ -13,28 +13,8 @@ def updates():
 def services():
     run_command("sudo apt install ssh")
 
-    print("Disabling SSH root login...")
-
-    #Back up SSH config file
-    run_command("sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak")
-
-    #Open SSH config file for editing
-    with open("/etc/ssh/sshd_config", "r") as f:
-        lines = f.readlines()
-
-    #Update SSH configuration
-    updated_lines = []
-    for line in lines:
-        if line.startswith("PermitRootLogin"):
-            updated_lines.append("PermitRootLogin no/n")
-        else:
-            updated_lines.append(line)
-
-    #Write updating configuration to file
-    with open("/etc/ssh/sshd_config", "w") as f:
-        f.writelines(updated_lines)
-
-    #Restart SSH service
+    #Disable SSH root login
+    run_command("sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config")
     run_command("sudo service ssh restart")
 
     print("SSH root login disabled.")

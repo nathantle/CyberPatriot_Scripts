@@ -116,15 +116,13 @@ def users():
 
         if "sudo" in groups:
             sudoer = True
-            print(f"{user} is a sudo")
         else:
             sudoer = False
-            print(f"{user} is not a sudo")
 
         if sudoer and user not in authadmns:
-            run_command(f"sudo adduser {user} sudo")
-        elif not sudoer and user in authadmns:
             run_command(f"sudo deluser {user} sudo")
+        elif not sudoer and user in authadmns:
+            run_command(f"sudo adduser {user} sudo")
 
     run_command("sudo passwd -l root")
 

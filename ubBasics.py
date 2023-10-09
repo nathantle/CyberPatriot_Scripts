@@ -40,18 +40,18 @@ def services():
     for service in services:
         print(service)
 
-    anymoreservices == False
+    moreservices == False
 
-    while anymoreservices == False:
+    while moreservices == False:
         srvc = input("Enter a desired service to delete: ")
         moreservices = input("Done?(y/n)")
 
         run_command(f"sudo systemctl stop {srvc}")
         run_command(f"sudo systemctl disable {srvc}")
         if moreservices == "y":
-            anymoreservices == True
+            services == True
         else:
-            anymoreservices == False
+            moreservices == False
 
 def users():
     done = False
@@ -116,8 +116,10 @@ def users():
 
         if "sudo" in groups:
             sudoer = True
+            print(f"{user} is a sudo")
         else:
             sudoer = False
+            print(f"{user} is not a sudo")
 
         if sudoer and user not in authadmns:
             run_command(f"sudo adduser {user} sudo")

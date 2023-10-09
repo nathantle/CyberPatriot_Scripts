@@ -1,6 +1,7 @@
 import subprocess
 import basics
 import mantasks
+import users
 
 def run_command(command):
     subprocess.run(command, shell=True, check=True)
@@ -26,6 +27,7 @@ def disable_guest():
 def main():
     basics.all()
     mantasks.all()
+    users.all()
 
     print("System secured.")
 

@@ -39,12 +39,6 @@ def users():
     else:
         print(f"Error: {error.decode()}")
         return []
-    
-    command = "grep '^sudo:.*$' /etc/group | cut -d: -f4"
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output, _ = process.communicate()
-    admins = output.decode().strip().split(",")
-    admins.remove(defaultuser)
 
     for user in usrlist:
         if user not in authusrs + authadmns:

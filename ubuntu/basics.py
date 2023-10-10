@@ -2,14 +2,14 @@ import subprocess
 
 def run_command(command):
     subprocess.run(command, shell=True, check=True)
-
 def updates():
     run_command("sudo apt update -y")
     run_command("sudo apt upgrade -y")
     run_command("sudo apt autoremove -y")
     run_command("sudo ufw enable")
+    run_command("sudo ufw default deny incoming")
+    run_command("sudo ufw default allow outgoing")
     run_command("sudo ufw allow ssh")
-
 def services():
     run_command("sudo apt install ssh")
 

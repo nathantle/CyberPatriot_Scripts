@@ -3,6 +3,7 @@ import subprocess
 def run_command(command):
     subprocess.run(command, shell=True, check=True)
 def updates():
+    packagemgr = input("What package manager do you want to use?(apt/yum/apt-get)")
     run_command("sudo apt update -y")
     run_command("sudo apt upgrade -y")
     run_command("sudo apt autoremove -y")
@@ -22,7 +23,7 @@ def services():
     print("Enforcing SSH key authentication...")
 
     #Disable password authentication in SSH server configuration
-    run_command("sudo sed -i s/#PasswordAuthentication yes/PasswordAuthentication no/ /etc/ssh/sshd.config")
+    run_command("sudo sed -i s/PasswordAuthentication yes/PasswordAuthentication no/ /etc/ssh/sshd.config")
 
     #Restart SSH service
     run_command("sudo systemctl restart ssh")
@@ -40,18 +41,18 @@ def services():
     for service in services:
         print(service)
 
-    moreservices == False
+    moreservices1 == False
 
-    while moreservices == False:
+    while moreservices1:
         srvc = input("Enter a desired service to delete: ")
         moreservices = input("Done?(y/n)")
 
         run_command(f"sudo systemctl stop {srvc}")
         run_command(f"sudo systemctl disable {srvc}")
         if moreservices == "y":
-            services == True
+            moreservices1 == True
         else:
-            moreservices == False
+            moreservices1 == False
 def all():
     updates()
     services()

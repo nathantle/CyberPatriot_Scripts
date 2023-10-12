@@ -40,19 +40,25 @@ def services():
 
     for service in services:
         print(service)
+    
+    badServices = ["nginx", "apache2"]
 
-    moreservices1 == False
+    for badService in badServices:
+        run_command(f"sudo sytemctl stop {badService}")
+        run_command(f"sudo sytemctl disable {badService}")
 
-    while moreservices1:
+    donedeletingservices = True
+
+    while donedeletingservices:
         srvc = input("Enter a desired service to delete: ")
         moreservices = input("Done?(y/n)")
 
         run_command(f"sudo systemctl stop {srvc}")
         run_command(f"sudo systemctl disable {srvc}")
         if moreservices == "y":
-            moreservices1 == True
+            donedeletingservices == True
         else:
-            moreservices1 == False
+            donedeletingservices == False
 def all():
     updates()
     services()

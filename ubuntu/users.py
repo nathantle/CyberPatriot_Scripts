@@ -11,7 +11,7 @@ def users():
 
     # Loops adding authorized admin
     while True:
-        authadmn = input("Enter an authorized admin (press q to stop, r to remove): ").lower()
+        authadmn = input("Enter an authorized admin (press q to stop, r to remove last input)): ").lower()
         if authadmn == "q":
             break
         elif authadmn == "r":
@@ -21,7 +21,7 @@ def users():
 
     # Loops adding authorized users
     while True:
-        authusr = input("Enter an authorized user (press q to stop, r to remove): ").lower()
+        authusr = input("Enter an authorized user (press q to stop, r to remove last input)): ").lower()
         if authusr == "q":
             break
         elif authusr == "r":
@@ -80,7 +80,7 @@ def users():
             run_command(f"sudo adduser {user} sudo") # Adds the user to group sudo, adding admin permissions
 
     while True:
-        usrtoadd = input("Enter a user to add (press q to stop, r to remove): ").lower()
+        usrtoadd = input("Enter a user to add (press q to stop, r to remove last input)): ").lower()
 
         if usrtoadd == "q":
             break
@@ -93,7 +93,7 @@ def users():
 
 def groups():
     while True:
-        grouptoadd = input("Enter a group to add (press q to stop, r to remove): ").lower()
+        grouptoadd = input("Enter a group to add (press q to stop, r to remove last input): ").lower()
         if grouptoadd == "q":
             break
         elif grouptoadd == "r":

@@ -5,40 +5,29 @@ def run_command(command):
     subprocess.run(command, shell=True, check=True)
 
 def users():
-    done = False
-
     # Declares lists of authorized admins and authorized users
     authadmns = []
     authusrs = []
 
     # Loops adding authorized admin
-    while not done:
-        authadmn = input("Enter an authorized admin: ")
-
-        # Adds the authadm variable to the authorized admins array
-        authadmns.append(authadmn)
-
-        # Asks the user if they are done listing admins
-        donelistingadmins = input("Done?(y/n)").lower()
-        if(donelistingadmins == "y"):
-            done = True
-        else:
-            done = False
-    done = False
+    while True:
+        authadmn = input("Enter an authorized admin (press q to stop, r to remove): ").lower()
+        if authadmn == "q":
+            break
+        elif authadmn == "r":
+            authadmn.pop()
+            continue
+        authadmns.append(authadmn) # Adds the authadm variable to the authorized admins array
 
     # Loops adding authorized users
-    while not done:
-        authusr = input("Enter an authorized user: ")
-
-        # Adds the authusr variable to the authorized users array
-        authusrs.append(authusr)
-
-        # Asks the user if they are done listing users
-        donelistingusers = input("Done?(y/n)").lower()
-        if donelistingusers == "y":
-            done = True
-        else:
-            done = False
+    while True:
+        authusr = input("Enter an authorized user (press q to stop, r to remove): ").lower()
+        if authusr == "q":
+            break
+        elif authusr == "r":
+            authusrs.pop()
+            continue
+        authusrs.append(authusr) # Adds the authusr variable to the authorized users array
 
     # Cuts the output into parts by ":" and shows only the first part of each line
     process = subprocess.Popen("cut -d: -f1 /etc/passwd", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -70,7 +59,7 @@ def users():
         newpass = "Cyb3rP@triot24!" # New password variable for next block of code
 
         # Sets all users' passwords to newpass
-        passwd_process = subprocess.Popen(['sudo', 'passwd', user], stdin=subprocess.PIPE, stdout=subprocess.PIPE) 
+        passwd_process = subprocess.Popen(f"sudo passwd {user}", stdin=subprocess.PIPE, stdout=subprocess.PIPE) 
         passwd_process.communicate(input=f'{newpass}\n{newpass}\n'.encode())
 
         # Check the exit code to determine if the password change was successful
@@ -85,55 +74,32 @@ def users():
         output, _ = process.communicate()
         groups = output.decode().strip().split() # Stores users' groups in an array
 
-        if "sudo" in groups: # If groups contains "sudo"
-            sudoer = True
-        else:
-            sudoer = False
-
-        if sudoer and user not in authadmns: # If they have admin permissions and they are not an authorized admin
+        if "sudo" in groups and user not in authadmns: # If they have admin permissions and they are not an authorized admin
             run_command(f"sudo deluser {user} sudo") # Removes the user from group sudo, essentially removing admin permissions
-        elif not sudoer and user in authadmns: # If they do not have admin permissions and they are an authorized admin
+        elif "sudo" not in groups and user not in authadmns: # If they do not have admin permissions and they are an authorized admin
             run_command(f"sudo adduser {user} sudo") # Adds the user to group sudo, adding admin permissions
 
-    doneaddingusers = False
+    while True:
+        usrtoadd = input("Enter a user to add (press q to stop, r to remove): ").lower()
 
-    while not doneaddingusers:
-        wanttoaddusers = input("Add a user(y/n)").lower()
-        if wanttoaddusers == "y":
-            usertoadd = input("Enter name of user to add: ")
-            run_command(f"sudo adduser {usertoadd}")
-            moreuserstoadd = input("Any more?(y/n)")
-            if moreuserstoadd == "y":
-                doneaddingusers = False
-            else:
-                doneaddingusers = True
-        else:
-            doneaddingusers = True
+        if usrtoadd == "q":
+            break
+        elif usrtoadd == "r":
+            usrtoadd.pop()
+            continue
+        run_command(f"sudo useradd {usrtoadd}")
 
     run_command("sudo passwd -l root")
 
 def groups():
-    doneaddinggroups = False
-
-    while not doneaddinggroups:
-        grouptoadd = input("Enter the name of the group to add:")
+    while True:
+        grouptoadd = input("Enter a group to add (press q to stop, r to remove): ").lower()
+        if grouptoadd == "q":
+            break
+        elif grouptoadd == "r":
+            grouptoadd.pop()
+            continue
         run_command(f"sudo addgroup {grouptoadd}")
-
-        doneaddinguserstogroup = False
-
-        while(not doneaddinguserstogroup):
-            usertoadd = input("Enter the name of the user to add to the group:")
-            run_command(f"sudo useradd {usertoadd} {grouptoadd}")
-            finishedaddinguserstogroup = input("Any more users?(y/n)").lower()
-        if finishedaddinguserstogroup == "y":
-            doneaddinguserstogroup = True
-        else:
-            doneaddinguserstogroup = False
-        finishedaddinggroups = input("Add another group?(y/n)").lower()
-        if finishedaddinggroups == "y":
-            doneaddinggroups == True
-        else:
-            doneaddinggroups == False
 
 def all():
     users()

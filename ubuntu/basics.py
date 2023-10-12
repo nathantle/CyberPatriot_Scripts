@@ -3,10 +3,18 @@ import subprocess
 def run_command(command):
     subprocess.run(command, shell=True, check=True)
 def updates():
-    packagemgr = input("What package manager do you want to use?(apt/yum/apt-get)")
-    run_command("sudo apt update -y")
-    run_command("sudo apt upgrade -y")
-    run_command("sudo apt autoremove -y")
+    packagemanager = ""
+    while packagemanager != "apt" + "yum" + "apt-get":
+        try:
+            packagemanager = input("Enter the package manager this system uses (apt, yum, apt-get): ").lower()
+            if packagemanager != "apt" + "yum" + "apt-get":
+                print("Enter a valid package manager. ")
+        except ValueError:
+            print("Enter a valid value.")
+    if packagemanager == "apt":     
+        run_command("sudo apt update -y")
+        run_command("sudo apt upgrade -y")
+        run_command("sudo apt autoremove -y")
     run_command("sudo ufw enable")
     run_command("sudo ufw default deny incoming")
     run_command("sudo ufw default allow outgoing")

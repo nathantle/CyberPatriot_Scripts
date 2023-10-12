@@ -10,6 +10,8 @@ def updatesettings():
     input("Press enter when ready...")
     print("Step 3: Set 'Automatically check for updates' to 'Daily'")
     input("Press enter when ready...")
+    print("Automatic Updates Enabled")
+    run_command("clear")
 def disableguest():
     print("Manual Task 2: Disable Guest Account")
 def all():

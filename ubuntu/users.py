@@ -67,10 +67,11 @@ def users():
     for user in usrlist:
         if user not in authusrs + authadmns: # If user is not on any of the lists
             run_command(f"sudo deluser {user}") # Deletes the user
+        newpass = "Cyb3rP@triot24!" # New password variable for next block of code
 
         # Sets all users' passwords to newpass
-        passwd_process = subprocess.Popen(['sudo', 'passwd', "Cyb3rP@triot24!"], stdin=subprocess.PIPE, stdout=subprocess.PIPE) 
-        passwd_process.communicate(input=f'{"Cyb3rP@triot24!"}\n{"Cyb3rP@triot24!"}\n'.encode())
+        passwd_process = subprocess.Popen(['sudo', 'passwd', user], stdin=subprocess.PIPE, stdout=subprocess.PIPE) 
+        passwd_process.communicate(input=f'{newpass}\n{newpass}\n'.encode())
 
         # Check the exit code to determine if the password change was successful
         if passwd_process.returncode == 0:

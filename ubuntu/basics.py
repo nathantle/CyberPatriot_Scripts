@@ -4,10 +4,10 @@ def run_command(command):
     subprocess.run(command, shell=True, check=True)
 def updates():
     packagemanager = ""
-    while packagemanager != "apt" + "yum" + "apt-get":
+    while packagemanager != "apt" and packagemanager != "yum" and packagemanager != "apt-get":
         try:
             packagemanager = input("Enter the package manager this system uses (apt, yum, apt-get): ").lower()
-            if packagemanager != "apt" + "yum" + "apt-get":
+            if packagemanager != "apt" and "yum" and "apt-get":
                 print("Enter a valid package manager. ")
         except ValueError:
             print("Enter a valid value.")

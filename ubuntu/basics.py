@@ -50,17 +50,22 @@ def services():
     badServices = ["nginx", "apache2"]
 
     for badService in badServices:
-        run_command(f"sudo systemctl stop {badService}")
-        run_command(f"sudo systemctl disable {badService}")
+        try:
+            run_command(f"sudo systemctl stop {badService}")
+            run_command(f"sudo systemctl disable {badService}")
+        except Exception as e:
+            print(e)
 
     while True:
         srvc = input("Enter a desired service to delete(q to stop): ")
 
         if srvc == "q" or "Q":
             break
-
-        run_command(f"sudo systemctl stop {srvc}")
-        run_command(f"sudo systemctl disable {srvc}")
+        try:
+            run_command(f"sudo systemctl stop {srvc}")
+            run_command(f"sudo systemctl disable {srvc}")
+        except Exception as e:
+            print(e)
 def all():
     updates()
     services()

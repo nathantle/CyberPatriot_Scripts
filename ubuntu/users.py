@@ -30,7 +30,7 @@ def users():
         authusrs.append(authusr) # Adds the authusr variable to the authorized users array
 
     # Cuts the output into parts by ":" and shows only the first part of each line
-    usrlist = subprocess.run(["cut", "-d:", "-f1", "/etc/passwd"], capture_ouput=True, text=True).stdout.split()
+    usrlist = subprocess.run(["cut", "-d:", "-f1", "/etc/passwd"], capture_output=True, text=True).stdout.split()
 
     # Asks for the default root user so that the script doesn't mess with the default root user
     defaultusr = input("Enter default root user: ").lower()

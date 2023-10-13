@@ -73,6 +73,13 @@ def users():
         except Exception as e:
             print(f"Error occured: {e}")
 
+    for authadm in authadmns:
+        if authadmn not in usrlist:
+            run_command(f"sudo adduser {authadm}")
+    for authusr in authusrs:
+        if authusr not in usrlist:
+            run_command(f"sudo adduser {authusr}")
+
     while True:
         usrtoadd = input("Enter a user to add (press q to stop, r to remove last input)): ").lower()
 

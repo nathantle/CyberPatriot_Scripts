@@ -5,11 +5,12 @@ import policies
 import rm_unauth
 
 def main():
+    rm_unauth.understand()
     basics.all()
     mantasks.all()
     users.all()
     policies.all()
-    rm_unauth.understand()
+    rm_unauth.find_unauth_files()
 
     print("System secured.")
 

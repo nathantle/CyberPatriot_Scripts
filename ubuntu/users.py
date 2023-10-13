@@ -51,33 +51,32 @@ def users():
         # If the command doesn't work, return empty array and print that there was an error
         print(f"Error: {error.decode()}")
         return []
-
+    
+    newpass = "Cyb3rP@triot24!" # New password variable for next block of code
     # Loops through every user in the user list
     for user in usrlist:
-        if user not in authusrs + authadmns: # If user is not on any of the lists
-            run_command(f"sudo deluser {user}") # Deletes the user
-        newpass = "Cyb3rP@triot24!" # New password variable for next block of code
+        try:
+            if user not in authusrs + authadmns: # If user is not on any of the lists
+                run_command(f"sudo deluser {user}") # Deletes the user
 
-        # Sets all users' passwords to newpass
-        passwd_process = subprocess.Popen(f"sudo passwd {user}", stdin=subprocess.PIPE, stdout=subprocess.PIPE) 
-        passwd_process.communicate(input=f'{newpass}\n{newpass}\n'.encode())
+            # Sets all users' passwords to newpass
+            passwd_process = subprocess.Popen(f"sudo passwd {user}", stdin=subprocess.PIPE, stdout=subprocess.PIPE) 
+            passwd_process.communicate(input=f'{newpass}\n{newpass}\n'.encode())
 
-        # Check the exit code to determine if the password change was successful
-        if passwd_process.returncode == 0:
-            print(f"Password changed successfully for user '{user}'")
-        else:
-            print(f"Failed to change password for user '{user}'")
-        
-        # Setting correct user permissions
-        # Gets users' groups
-        process = subprocess.Popen(f"sudo groups {user}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        output, _ = process.communicate()
-        groups = output.decode().strip().split() # Stores users' groups in an array
+            print(f"Successfully changed password for {user}")
 
-        if "sudo" in groups and user not in authadmns: # If they have admin permissions and they are not an authorized admin
-            run_command(f"sudo deluser {user} sudo") # Removes the user from group sudo, essentially removing admin permissions
-        elif "sudo" not in groups and user not in authadmns: # If they do not have admin permissions and they are an authorized admin
-            run_command(f"sudo adduser {user} sudo") # Adds the user to group sudo, adding admin permissions
+            # Setting correct user permissions
+            # Gets users' groups
+            process = subprocess.Popen(f"sudo groups {user}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            output, _ = process.communicate()
+            groups = output.decode().strip().split() # Stores users' groups in an array
+
+            if "sudo" in groups and user not in authadmns: # If they have admin permissions and they are not an authorized admin
+                run_command(f"sudo deluser {user} sudo") # Removes the user from group sudo, essentially removing admin permissions
+            elif "sudo" not in groups and user not in authadmns: # If they do not have admin permissions and they are an authorized admin
+                run_command(f"sudo adduser {user} sudo") # Adds the user to group sudo, adding admin permissions
+        except Exception:
+            print(f"Error occured")
 
     while True:
         usrtoadd = input("Enter a user to add (press q to stop, r to remove last input)): ").lower()

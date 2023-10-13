@@ -24,19 +24,17 @@ def services():
 
     #Disable SSH root login
     run_command("sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config")
-    run_command("sudo service ssh restart")
 
     print("SSH root login disabled.")
 
-    print("Enforcing SSH key authentication...")
+    # print("Enforcing SSH key authentication...")
 
     #Disable password authentication in SSH server configuration
-    run_command("sudo sed -i s/PasswordAuthentication yes/PasswordAuthentication no/ /etc/ssh/sshd.config")
+    # This code does not work
+    # run_command("sudo sed -i s/PasswordAuthentication yes/PasswordAuthentication no/ /etc/ssh/sshd.config")
 
     #Restart SSH service
-    run_command("sudo systemctl restart ssh")
-
-    print("SSH key based authentication has been enforced.")
+    run_command("sudo service ssh restart")
 
     run_command("sudo apt purge -y telnet ftp telnetd vsftpd")
 
@@ -52,21 +50,17 @@ def services():
     badServices = ["nginx", "apache2"]
 
     for badService in badServices:
-        run_command(f"sudo sytemctl stop {badService}")
-        run_command(f"sudo sytemctl disable {badService}")
+        run_command(f"sudo systemctl stop {badService}")
+        run_command(f"sudo systemctl disable {badService}")
 
-    donedeletingservices = True
+    while True:
+        srvc = input("Enter a desired service to delete(q to stop): ")
 
-    while donedeletingservices:
-        srvc = input("Enter a desired service to delete: ")
-        moreservices = input("Done?(y/n)")
+        if srvc == "q" or "Q":
+            break
 
         run_command(f"sudo systemctl stop {srvc}")
         run_command(f"sudo systemctl disable {srvc}")
-        if moreservices == "y":
-            donedeletingservices == True
-        else:
-            donedeletingservices == False
 def all():
     updates()
     services()

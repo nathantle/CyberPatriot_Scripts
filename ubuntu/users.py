@@ -40,7 +40,7 @@ def users():
         defaultuser = input("Enter default root user: ").lower()
 
         # Declares array of default users that we don't want to mess with
-        defaultusrs = ["root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd", "systemd-network", "systemd-oom", "tcpdump"]
+        defaultusrs = ["lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd", "systemd-network", "systemd-oom", "tcpdump"]
         
         # Deletes the default root user from the array
         ulist.remove(defaultuser)
@@ -60,7 +60,7 @@ def users():
                 run_command(f"sudo deluser {user}") # Deletes the user
 
             # Sets all users' passwords to newpass
-            passwd_process = subprocess.Popen(f"sudo passwd {user}", stdin=subprocess.PIPE, stdout=subprocess.PIPE) 
+            passwd_process = subprocess.Popen(["sudo", "passwd", user], stdin=subprocess.PIPE, stdout=subprocess.PIPE) 
             passwd_process.communicate(input=f'{newpass}\n{newpass}\n'.encode())
 
             print(f"Successfully changed password for {user}")
@@ -73,7 +73,7 @@ def users():
 
             if "sudo" in groups and user not in authadmns: # If they have admin permissions and they are not an authorized admin
                 run_command(f"sudo deluser {user} sudo") # Removes the user from group sudo, essentially removing admin permissions
-            elif "sudo" not in groups and user not in authadmns: # If they do not have admin permissions and they are an authorized admin
+            elif "sudo" not in groups and user in authadmns: # If they do not have admin permissions and they are an authorized admin
                 run_command(f"sudo adduser {user} sudo") # Adds the user to group sudo, adding admin permissions
         except Exception:
             print(f"Error occured")

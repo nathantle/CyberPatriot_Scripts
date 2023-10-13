@@ -3,8 +3,13 @@ import subprocess
 def run_command(command):
     # Runs command in terminal
     subprocess.run(command, shell=True, check=True)
+def clear():
+    run_command("clear")
 
 def users():
+    next_step = input("Press enter to proceed to next step(managing users), type 'skip' to skip this step")
+    if next_step == "skip":
+        return   
     # Declares lists of authorized admins and authorized users
     authadmns = []
     authusrs = []
@@ -79,8 +84,13 @@ def users():
         run_command(f"sudo useradd {usrtoadd}")
 
     run_command("sudo passwd -l root")
+    clear()
+    print("Users managed")
 
 def groups():
+    next_step = input("Press enter to proceed to next step(managing groups), type 'skip' to skip this step")
+    if next_step == "skip":
+        return   
     while True:
         grouptoadd = input("Enter a group to add (press q to stop, r to remove last input): ").lower()
         if grouptoadd == "q":
@@ -100,6 +110,8 @@ def groups():
             break
         usertoaddtogroup = usertoaddtogroup.split()
         run_command(f"sudo adduser {usertoaddtogroup[1]} {usertoaddtogroup[0]}")
+    clear()
+    print("Groups managed")
 
 def all():
     users()

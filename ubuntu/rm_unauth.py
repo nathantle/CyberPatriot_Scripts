@@ -3,6 +3,8 @@ import subprocess
 def run_command(command):
     # Runs command in terminal
     subprocess.run(command, shell=True, check=True)
+def clear():
+    run_command("clear")
 
 def find_unauth_files():
     run_command("cd /home/")
@@ -19,8 +21,13 @@ def find_unauth_files():
             run_command(f"rm {file_path}")
         else:
             continue
-        
+
 def understand():
     understand = input("Do you understand this script?(y/n):")
     if understand != "thisisthebestscript":
         run_command("sudo shutdown now")
+    else:
+        clear()
+
+def all():
+    find_unauth_files()

@@ -30,8 +30,7 @@ def users():
         authusrs.append(authusr) # Adds the authusr variable to the authorized users array
 
     # Cuts the output into parts by ":" and shows only the first part of each line
-    result = subprocess.run(["cut", "-d:", "-f1", "/etc/passwd"], capture_ouput=True, text=True)
-    usrlist = result.stdout.split()
+    usrlist = subprocess.run(["cut", "-d:", "-f1", "/etc/passwd"], capture_ouput=True, text=True).stdout.split()
 
     # Asks for the default root user so that the script doesn't mess with the default root user
     defaultusr = input("Enter default root user: ").lower()
@@ -45,25 +44,20 @@ def users():
             usrlist.remove(defaultusr)
         except ValueError:
             continue
-    
-    newpass = "Cyb3rP@triot24!" # New password variable for next block of code
-    # Loops through every user in the user list
-    for usr in usrlist:
+
+    for usr in usrlist: # Loops through every user in the user list
         try:
             if usr not in authusrs + authadmns: # If user is not on any of the lists
                 print(f"Deleting {usr}")
                 run_command(f"sudo deluser {usr}") # Deletes the user
 
             # Sets all users' passwords to newpass
-            passwd_process = subprocess.Popen(["sudo", "passwd", usr], stdin=subprocess.PIPE, stdout=subprocess.PIPE) 
-            passwd_process.communicate(input=f'{newpass}\n{newpass}\n'.encode())
-
+            subprocess.run(["passwd", usr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n", check=True)
             print(f"Successfully changed password for {usr}")
 
             # Setting correct user permissions
             # Gets users' groups
-            result = subprocess.run(["groups", usr], capture_output=True, text=True)
-            groups = result.stdout.split()
+            groups = subprocess.run(["groups", usr], capture_output=True, text=True).stdout.split()
 
             if "sudo" in groups and usr not in authadmns: # If they have admin permissions and they are not an authorized admin
                 print(f"Removing {usr} from group 'sudo'")
@@ -71,8 +65,8 @@ def users():
             elif "sudo" not in groups and usr in authadmns: # If they do not have admin permissions and they are an authorized admin
                 print(f"Adding {usr} to group 'sudo'")
                 run_command(f"sudo adduser {usr} sudo") # Adds the user to group sudo, adding admin permissions
-        except Exception:
-            print(f"Error occured")
+        except Exception as e:
+            print(f"Error occured: {e}")
 
     while True:
         usrtoadd = input("Enter a user to add (press q to stop, r to remove last input)): ").lower()

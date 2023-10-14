@@ -6,7 +6,7 @@ def run_command(command):
 def clear():
     run_command("clear")
 
-def users():
+def manage_users():
     next_step = input("Press enter to proceed to next step(managing users), type 'skip' to skip this step")
     if next_step == "skip": return   
     # Declares lists of authorized admins and authorized users
@@ -20,7 +20,7 @@ def users():
         elif authadmn == "r":
             authadmns.pop()
             continue
-        authadmns.append(authadmn) # Adds the authadm variable to the authorized admins array
+        authadmns.append(authadmn) # Adds the authadmn variable to the authorized admins array
 
     # Loops adding authorized users
     while True:
@@ -53,7 +53,7 @@ def users():
 
             # Sets all users' passwords to newpass
             subprocess.run(["passwd", usr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n", check=True)
-            print(f"Successfully changed password for {usr}")
+            print(f"\nSuccessfully changed password for {usr}")
 
             # Setting correct user permissions
             # Gets users' groups
@@ -68,9 +68,12 @@ def users():
         except Exception as e: print(f"Error occured: {e}")
 
     for authadm in authadmns:
-        if authadm not in usrlist: subprocess.run(["sudo", "adduser", authadm], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
+        if authadm not in usrlist: 
+            print("Adding user {authadm}")
+            subprocess.run(["sudo", "adduser", authadm], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
     for authusr in authusrs:
-        if authusr not in usrlist: subprocess.run(["sudo", "adduser", authusr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
+        if authusr not in usrlist: 
+            subprocess.run(["sudo", "adduser", authusr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
 
     while True:
         usrtoadd = input("Enter a user to add (press q to stop, r to remove last input)): ").lower()
@@ -107,5 +110,5 @@ def groups():
     print("Groups managed")
 
 def all():
-    users()
+    manage_users()
     groups()

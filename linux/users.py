@@ -18,7 +18,7 @@ def users():
         authadmn = input("Enter an authorized admin (press q to stop, r to remove last input)): ").lower()
         if authadmn == "q": break
         elif authadmn == "r":
-            authadmn.pop()
+            authadmns.pop()
             continue
         authadmns.append(authadmn) # Adds the authadm variable to the authorized admins array
 
@@ -34,8 +34,7 @@ def users():
     # Cuts the output into parts by ":" and shows only the first part of each line
     usrlist = subprocess.run(["cut", "-d:", "-f1", "/etc/passwd"], capture_output=True, text=True).stdout.split()
 
-    # Asks for the default root user so that the script doesn't mess with the default root user
-    defaultusr = input("Enter default root user: ").lower()
+    defaultusr = input("Enter default root user: ").lower() # Asks for the default root user so that the script doesn't mess with the default root user
 
     # Declares array of default users that we don't want to mess with
     defaultusrs = ["lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd", "systemd-network", "systemd-oom", "tcpdump"]

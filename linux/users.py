@@ -33,7 +33,6 @@ def users():
 
     # Cuts the output into parts by ":" and shows only the first part of each line
     usrlist = subprocess.run(["cut", "-d:", "-f1", "/etc/passwd"], capture_output=True, text=True).stdout.split()
-
     defaultusr = input("Enter default root user: ").lower() # Asks for the default root user so that the script doesn't mess with the default root user
 
     # Declares array of default users that we don't want to mess with
@@ -50,6 +49,7 @@ def users():
             if usr not in authusrs + authadmns: # If user is not on any of the lists
                 print(f"Deleting {usr}")
                 run_command(f"sudo deluser {usr}") # Deletes the user
+                usrlist.remove(usr) # Removes the user from the array to make looping through it faster
 
             # Sets all users' passwords to newpass
             subprocess.run(["passwd", usr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n", check=True)

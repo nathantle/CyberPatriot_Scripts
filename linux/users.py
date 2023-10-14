@@ -74,8 +74,8 @@ def users():
             print(f"Error occured: {e}")
 
     for authadm in authadmns:
-        if authadmn not in usrlist:
-            subprocess.run(["sudo", "adduser", authusr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
+        if authadm not in usrlist:
+            subprocess.run(["sudo", "adduser", authadm], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
     for authusr in authusrs:
         if authusr not in usrlist:
             subprocess.run(["sudo", "adduser", authusr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")

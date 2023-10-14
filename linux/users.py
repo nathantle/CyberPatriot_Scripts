@@ -8,8 +8,7 @@ def clear():
 
 def users():
     next_step = input("Press enter to proceed to next step(managing users), type 'skip' to skip this step")
-    if next_step == "skip":
-        return   
+    if next_step == "skip": return   
     # Declares lists of authorized admins and authorized users
     authadmns = []
     authusrs = []
@@ -17,8 +16,7 @@ def users():
     # Loops adding authorized admin
     while True:
         authadmn = input("Enter an authorized admin (press q to stop, r to remove last input)): ").lower()
-        if authadmn == "q":
-            break
+        if authadmn == "q": break
         elif authadmn == "r":
             authadmn.pop()
             continue
@@ -27,8 +25,7 @@ def users():
     # Loops adding authorized users
     while True:
         authusr = input("Enter an authorized user (press q to stop, r to remove last input)): ").lower()
-        if authusr == "q":
-            break
+        if authusr == "q": break
         elif authusr == "r":
             authusrs.pop()
             continue
@@ -47,8 +44,7 @@ def users():
     for defaultusr in defaultusrs:
         try:
             usrlist.remove(defaultusr)
-        except ValueError:
-            continue
+        except ValueError: continue
 
     for usr in usrlist: # Loops through every user in the user list
         try:
@@ -70,21 +66,17 @@ def users():
             elif "sudo" not in groups and usr in authadmns: # If they do not have admin permissions and they are an authorized admin
                 print(f"Adding {usr} to group 'sudo'")
                 run_command(f"sudo adduser {usr} sudo") # Adds the user to group sudo, adding admin permissions
-        except Exception as e:
-            print(f"Error occured: {e}")
+        except Exception as e: print(f"Error occured: {e}")
 
     for authadm in authadmns:
-        if authadm not in usrlist:
-            subprocess.run(["sudo", "adduser", authadm], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
+        if authadm not in usrlist: subprocess.run(["sudo", "adduser", authadm], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
     for authusr in authusrs:
-        if authusr not in usrlist:
-            subprocess.run(["sudo", "adduser", authusr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
+        if authusr not in usrlist: subprocess.run(["sudo", "adduser", authusr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
 
     while True:
         usrtoadd = input("Enter a user to add (press q to stop, r to remove last input)): ").lower()
 
-        if usrtoadd == "q":
-            break
+        if usrtoadd == "q": break
         elif usrtoadd == "r":
             usrtoadd.pop()
             continue
@@ -93,28 +85,23 @@ def users():
     run_command("sudo passwd -l root")
     clear()
     print("Users managed")
-
 def groups():
     next_step = input("Press enter to proceed to next step(managing groups), type 'skip' to skip this step")
-    if next_step == "skip":
-        return   
+    if next_step == "skip": return   
     while True:
         grouptoadd = input("Enter a group to add (press q to stop, r to remove last input): ").lower()
-        if grouptoadd == "q":
-            break
+        if grouptoadd == "q": break
         elif grouptoadd == "r":
             grouptoadd.pop()
             continue
         run_command(f"sudo addgroup {grouptoadd}")
     while True:
         grouptorm = input("Enter a group to remove (q to stop): ").lower()
-        if grouptorm == "q":
-            break
+        if grouptorm == "q": break
         run_command(f"sudo delgroup {grouptorm}")
     while True:
         usertoaddtogroup = input("Enter a user to add to a group (q to stop) ex: 'group user'\t").lower()
-        if usertoaddtogroup == "q":
-            break
+        if usertoaddtogroup == "q": break
         usertoaddtogroup = usertoaddtogroup.split()
         run_command(f"sudo adduser {usertoaddtogroup[1]} {usertoaddtogroup[0]}")
     clear()

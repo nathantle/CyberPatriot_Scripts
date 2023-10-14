@@ -75,10 +75,10 @@ def users():
 
     for authadm in authadmns:
         if authadmn not in usrlist:
-            run_command(f"sudo adduser {authadm}")
+            subprocess.run(["sudo", "adduser", authusr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
     for authusr in authusrs:
         if authusr not in usrlist:
-            run_command(f"sudo adduser {authusr}")
+            subprocess.run(["sudo", "adduser", authusr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
 
     while True:
         usrtoadd = input("Enter a user to add (press q to stop, r to remove last input)): ").lower()

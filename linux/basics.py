@@ -4,6 +4,14 @@ def run_command(command):
     subprocess.run(command, shell=True, check=True)
 def clear():
     run_command("clear")
+def forensic_questions():
+    try:
+        print("Opening Forensic Questions")
+        run_command("nano Desktop/Forensic Question 1")
+        run_command("nano Desktop/Forensic Question 2")
+        input("Press enter to continue")
+    except Exception as e:
+        print(e)
 def updates():
     packagemanager = ""
     while packagemanager != "apt" and "yum" and "apt-get":
@@ -85,6 +93,7 @@ def services():
     clear()
     print("Services configured")
 def all():
+    forensic_questions()
     updates()
     firewall()
     ssh()

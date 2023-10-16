@@ -13,8 +13,7 @@ def manage_users():
     authadmns = []
     authusrs = []
 
-    # Loops adding authorized admin
-    while True:
+    while True: # Filling authorized admin list
         authadmn = input("Enter an authorized admin (press q to stop, r to remove last input)): ").lower()
         if authadmn == "q": break
         elif authadmn == "r":
@@ -22,8 +21,7 @@ def manage_users():
             continue
         authadmns.append(authadmn) # Adds the authadmn variable to the authorized admins array
 
-    # Loops adding authorized users
-    while True:
+    while True: # Filling authorized user list
         authusr = input("Enter an authorized user (press q to stop, r to remove last input)): ").lower()
         if authusr == "q": break
         elif authusr == "r":
@@ -37,11 +35,11 @@ def manage_users():
 
     # Declares array of default users that we don't want to mess with
     defaultusrs = ["lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd", "systemd-network", "systemd-oom", "tcpdump"]
-    usrlist.remove(defaultusr) # Deletes the default root user from the list
+    defaultusrs.append(defaultusr)
 
     for defaultusr in defaultusrs:
         try:
-            usrlist.remove(defaultusr)
+            usrlist.remove(defaultusr) # Removes default users from userlist 
         except ValueError: continue
 
     for usr in usrlist: # Loops through every user in the user list
@@ -51,13 +49,11 @@ def manage_users():
                 run_command(f"sudo deluser {usr}") # Deletes the user
                 usrlist.remove(usr) # Removes the user from the array to make looping through it faster
 
-            # Sets all users' passwords to newpass
-            subprocess.run(["passwd", usr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n", check=True)
+            subprocess.run(["passwd", usr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n", check=True) # Sets passwords
             print(f"\nSuccessfully changed password for {usr}")
 
             # Setting correct user permissions
-            # Gets users' groups
-            groups = subprocess.run(["groups", usr], capture_output=True, text=True).stdout.split()
+            groups = subprocess.run(["groups", usr], capture_output=True, text=True).stdout.split() # Declares a list of user's groups
 
             if "sudo" in groups and usr not in authadmns: # If they have admin permissions and they are not an authorized admin
                 print(f"Removing {usr} from group 'sudo'")
@@ -65,7 +61,7 @@ def manage_users():
             elif "sudo" not in groups and usr in authadmns: # If they do not have admin permissions and they are an authorized admin
                 print(f"Adding {usr} to group 'sudo'")
                 run_command(f"sudo adduser {usr} sudo") # Adds the user to group sudo, adding admin permissions
-        except Exception as e: print(f"Error occured: {e}")
+        except Exception as e: print(e)
 
     for authadm in authadmns:
         if authadm not in usrlist: 

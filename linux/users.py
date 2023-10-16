@@ -5,7 +5,6 @@ def run_command(command):
     subprocess.run(command, shell=True, check=True)
 def clear():
     run_command("clear")
-
 def manage_users():
     next_step = input("Press enter to proceed to next step(managing users), type 'skip' to skip this step")
     if next_step == "skip": return   
@@ -83,7 +82,7 @@ def manage_users():
     run_command("sudo passwd -l root")
     clear()
     print("Users managed")
-def groups():
+def manage_groups():
     next_step = input("Press enter to proceed to next step(managing groups), type 'skip' to skip this step")
     if next_step == "skip": return   
     while True:
@@ -104,7 +103,6 @@ def groups():
         run_command(f"sudo adduser {usertoaddtogroup[1]} {usertoaddtogroup[0]}")
     clear()
     print("Groups managed")
-
 def all():
     manage_users()
-    groups()
+    manage_groups()

@@ -1,4 +1,5 @@
 import subprocess
+import time
 
 def run_command(command):
     subprocess.run(command, shell=True, check=True)
@@ -45,7 +46,8 @@ def ssh():
     if next_step == "skip":
         return   
     run_command("sudo apt install ssh")
-    run_command("sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config")
+
+    run_command("sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config") # Disables root login for ssh
 
     print("SSH root login disabled.")
 
@@ -54,8 +56,8 @@ def ssh():
     # This code does not work
     # run_command("sudo sed -i s/PasswordAuthentication yes/PasswordAuthentication no/ /etc/ssh/sshd.config")
 
-    #Restart SSH service
-    run_command("sudo service ssh restart")
+    run_command("sudo service ssh restart") # Restarts SSH
+    time.sleep(5)
     clear()
     print("SSH configured")
 def services():

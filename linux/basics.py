@@ -13,7 +13,7 @@ def forensic_questions():
         input("Press enter to continue")
     except Exception as e:
         print(e)
-def updates():
+def packages():
     packagemanager = ""
     while packagemanager != "apt" and "yum" and "apt-get":
         try:
@@ -31,6 +31,19 @@ def updates():
         run_command("sudo apt autoremove -y")
         clear()
         print("Updates completed")
+
+        while True:
+            apptoadd = input("Enter a package to add (q to stop): ")
+            if apptoadd == "q":
+                break
+            run_command(f"sudo apt install {apptoadd}")
+
+        while True:
+            apptorm = input("Enter a package to remove (q to stop): ")
+            if apptorm == "q":
+                break
+            run_command(f"sudo apt purge {apptorm}")
+    
 def firewall():
     next_step = input("Press enter to proceed to next step(configuring firewall), type 'skip' to skip this step")
     if next_step == "skip":
@@ -96,7 +109,7 @@ def services():
     print("Services configured")
 def all():
     forensic_questions()
-    updates()
+    packages()
     firewall()
     ssh()
     services()

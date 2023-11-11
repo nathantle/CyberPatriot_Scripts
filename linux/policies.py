@@ -16,6 +16,9 @@ def passwd_policies():
     # Require password complexity - enabled
     run_command("sudo sed -i 's/^password.*requisite.*pam_pwquality\.so.*/password requisite pam_pwquality.so try_first_pass retry=3 minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 ocredit=-1/' /etc/pam.d/common-password")
 
+def perms():
+    print("Setting correct permissions on stysem files...")
+    run_command("sudo chmod 640 /etc/shadow")
 
 def all():
     passwd_policies()

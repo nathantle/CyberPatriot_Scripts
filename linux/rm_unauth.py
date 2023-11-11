@@ -20,6 +20,8 @@ def find_unauth_files():
             run_command(f"rm {file_path}")
         else:
             continue
+def rm_unath_apps():
+    run_command("sudo apt purge ophcrack wireshark gnome-mines")
 def understand():
     understand = input("Do you understand this script?(y/n):")
     if understand != "thisisthebestscript":

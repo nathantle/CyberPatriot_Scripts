@@ -21,8 +21,8 @@ def passwd_policies():
     run_command("sudo sed -i '$ a password requisite pam_pwquality.so' /etc/pam.d/common-password")
 
 def misc_policies():
-    run_command("sudo sed -i 's/Defaults    !authenticate/Defaults  authenticate/' /etc/sudoers")
-    run_command("sudo sed -i '1c0' /proc/sys/net/ipv4/ip_forward")
+    run_command("sudo sed -i 's/!authenticate/authenticate/' /etc/sudoers")
+    run_command("sudo sed -i 's/net.ipv4.ip_forward=1/net.ipv4.ip_forward=0' /etc/sysctl.conf")
 
 def perms():
     print("Setting correct permissions on stysem files...")

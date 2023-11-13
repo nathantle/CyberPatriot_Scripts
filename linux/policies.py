@@ -30,3 +30,5 @@ def perms():
 
 def all():
     passwd_policies()
+    misc_policies()
+    perms()

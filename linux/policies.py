@@ -22,7 +22,7 @@ def passwd_policies():
 
 def misc_policies():
     run_command("sudo sed -i 's/Defaults    !authenticate/Defaults  authenticate/' /etc/sudoers")
-    run_command("sudo sed -i '1s/0/' /proc/sys/net/ipv4/ip_forward")
+    run_command("sudo sed -i '1c0' /proc/sys/net/ipv4/ip_forward")
 
 def perms():
     print("Setting correct permissions on stysem files...")
@@ -30,3 +30,5 @@ def perms():
 
 def all():
     passwd_policies()
+    misc_policies()
+    perms()

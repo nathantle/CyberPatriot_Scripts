@@ -15,6 +15,14 @@ def passwd_policies():
     run_command("sudo apt install libpam-pwquality")
     # Require password complexity - enabled
     run_command("sudo sed -i 's/^password.*requisite.*pam_pwquality\.so.*/password requisite pam_pwquality.so try_first_pass retry=3 minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 ocredit=-1/' /etc/pam.d/common-password")
+    # Password history kept - enabled
+    run_command("sudo sed -i '$ a password required pam_unix.so remember=5' /etc/pam.d/common-password")
+    # Extra dictionary-based password strength checks - enabled
+    run_command("sudo sed -i '$ a password requisite pam_pwquality.so' /etc/pam.d/common-password")
+
+def misc_policies():
+    run_command("sudo sed -i 's/Defaults    !authenticate/Defaults  authenticate/' /etc/sudoers")
+    run_command("sudo sed -i '1s/0/' /proc/sys/net/ipv4/ip_forward")
 
 def perms():
     print("Setting correct permissions on stysem files...")

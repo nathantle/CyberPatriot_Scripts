@@ -30,9 +30,9 @@ def manage_users():
 
     # Cuts the output into parts by ":" and shows only the first part of each line
     usrlist = subprocess.run(["cut", "-d:", "-f1", "/etc/passwd"], capture_output=True, text=True).stdout.split()
-    defaultusr = input("Enter default root user: ").lower() # Asks for the default root user so that the script doesn't mess with the default root user
-
+    
     # Declares array of default users that we don't want to mess with
+    defaultusr = input("Enter default root user: ").lower() # Asks for the default root user so that the script doesn't mess with the default root user
     defaultusrs = ["lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd", "systemd-network", "systemd-oom", "tcpdump"]
     defaultusrs.append(defaultusr)
 
@@ -65,10 +65,16 @@ def manage_users():
     for authadm in authadmns:
         if authadm not in usrlist: 
             print("Adding user {authadm}")
-            subprocess.run(["sudo", "adduser", authadm], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
+            try:
+                subprocess.run(["sudo", "adduser", authadm], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
+            except Exception as e:
+                print("Error:", e)
     for authusr in authusrs:
         if authusr not in usrlist: 
-            subprocess.run(["sudo", "adduser", authusr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
+            try:
+                subprocess.run(["sudo", "adduser", authusr], input=b"Cyb3rP@triot24!\nCyb3rP@triot24!\n\n\n\n\n\n\n")
+            except Exception as e:
+                print("Error:", e)
 
     while True:
         usrtoadd = input("Enter a user to add (press q to stop, r to remove last input)): ").lower()
@@ -77,7 +83,10 @@ def manage_users():
         elif usrtoadd == "r":
             usrtoadd.pop()
             continue
-        run_command(f"sudo useradd {usrtoadd}")
+        try:
+            run_command(f"sudo useradd {usrtoadd}")
+        except Exception as e:
+            print("Error:", e)
 
     run_command("sudo passwd -l root")
     clear()
@@ -91,7 +100,10 @@ def manage_groups():
         elif grouptoadd == "r":
             grouptoadd.pop()
             continue
-        run_command(f"sudo addgroup {grouptoadd}")
+        try:
+            run_command(f"sudo addgroup {grouptoadd}")
+        except Exception as e:
+            print("Error:", e)
     while True:
         grouptorm = input("Enter a group to remove (q to stop): ").lower()
         if grouptorm == "q": break
@@ -100,7 +112,10 @@ def manage_groups():
         usertoaddtogroup = input("Enter a user to add to a group (q to stop) ex: 'group user'\t").lower()
         if usertoaddtogroup == "q": break
         usertoaddtogroup = usertoaddtogroup.split()
-        run_command(f"sudo adduser {usertoaddtogroup[1]} {usertoaddtogroup[0]}")
+        try:
+            run_command(f"sudo adduser {usertoaddtogroup[1]} {usertoaddtogroup[0]}")
+        except Exception as e:
+            print("Error:", e)
     clear()
     print("Groups managed")
 def all():

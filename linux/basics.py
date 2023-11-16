@@ -36,13 +36,19 @@ def packages():
             apptoadd = input("Enter a package to add (q to stop): ")
             if apptoadd == "q":
                 break
-            run_command(f"sudo apt install {apptoadd}")
+            try:
+                run_command(f"sudo apt install {apptoadd}")
+            except Exception as e:
+                print("Error:", e)
 
         while True:
             apptorm = input("Enter a package to remove (q to stop): ")
             if apptorm == "q":
                 break
-            run_command(f"sudo apt purge {apptorm}")
+            try:
+                run_command(f"sudo apt purge {apptorm}")
+            except Exception as e:
+                print("Error:", e)
     
 def firewall():
     next_step = input("Press enter to proceed to next step(configuring firewall), type 'skip' to skip this step")
@@ -93,7 +99,7 @@ def services():
             run_command(f"sudo systemctl stop {badService}")
             run_command(f"sudo systemctl disable {badService}")
         except Exception as e:
-            print(e)
+            print("Error:", e)
 
     while True:
         srvc = input("Enter a desired service to delete(q to stop): ")
@@ -104,7 +110,7 @@ def services():
             run_command(f"sudo systemctl stop {srvc}")
             run_command(f"sudo systemctl disable {srvc}")
         except Exception as e:
-            print(e)
+            print("Error:", e)
     clear()
     print("Services configured")
 def all():

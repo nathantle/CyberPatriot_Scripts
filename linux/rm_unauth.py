@@ -21,7 +21,10 @@ def find_unauth_files():
         else:
             continue
 def rm_unath_apps():
-    run_command("sudo apt purge ophcrack wireshark gnome-mines")
+    try:
+        run_command("sudo apt purge ophcrack wireshark gnome-mines gnome-mahjonng")
+    except Exception as e:
+        print("Error:", e)
 def understand():
     understand = input("Do you understand this script?(y/n):")
     if understand != "thisisthebestscript":

@@ -33,3 +33,4 @@ def understand():
         clear()
 def all():
     find_unauth_files()
+    rm_unath_apps()

@@ -6,6 +6,8 @@ def run_command(command):
 def passwd_policies():
     print("Setting password policies...")
 
+    run_command("sudo pam-auth-update")
+
     run_command("sudo sed -i 's/^PASS_MAX\_REPEATS.*/PASS_MAX_REPEATS\t5/' /etc/login.defs")
     run_command("sudo sed -i 's/^PASS\_MAX\_DAYS.*/PASS_MAX_DAYS\t90/' /etc/login.defs")
     run_command("sudo sed -i 's/^PASS\_MAX\_DAYS\_ADMIN.*/PASS_MAX_DAYS_ADMIN\t30/' /etc/login.defs")
@@ -27,6 +29,7 @@ def misc_policies():
 def perms():
     print("Setting correct permissions on system files...")
     run_command("sudo chmod 640 /etc/shadow")
+    
 
 def all():
     passwd_policies()

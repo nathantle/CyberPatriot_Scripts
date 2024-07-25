@@ -22,12 +22,14 @@ def passwd_policies():
     # Extra dictionary-based password strength checks - enabled
     run_command("sudo sed -i '$ a password requisite pam_pwquality.so' /etc/pam.d/common-password")
 
+    subprocess.run("sudo sed -i '/s'")
+
 def misc_policies():
     run_command("sudo sed -i 's/!authenticate/authenticate/' /etc/sudoers")
     try:
-        subprocess.run("sudo sed -i 's/net.ipv4.ip_forward=1/net.ipv4.ip_forward=0' /etc/sysctl.conf", shell=True, check=False)
+        subprocess.run("sudo sed -i 's/net.ipv4.ip_forward=1/net.ipv4.ip_forward=0/g' /etc/sysctl.conf", shell=True, check=False)
     except Exception as e:
-        subprocess.run("sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=0' /etc/sysctl.conf", shell=True, check=False)
+        subprocess.run("sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=0/g' /etc/sysctl.conf", shell=True, check=False)
 
 def perms():
     print("Setting correct permissions on system files...")

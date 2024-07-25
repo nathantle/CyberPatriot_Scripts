@@ -24,7 +24,10 @@ def passwd_policies():
 
 def misc_policies():
     run_command("sudo sed -i 's/!authenticate/authenticate/' /etc/sudoers")
-    run_command("sudo sed -i 's/net.ipv4.ip_forward=1/net.ipv4.ip_forward=0' /etc/sysctl.conf")
+    try:
+        subprocess.run("sudo sed -i 's/net.ipv4.ip_forward=1/net.ipv4.ip_forward=0' /etc/sysctl.conf", shell=True, check=False)
+    except Exception as e:
+        subprocess.run("sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=0' /etc/sysctl.conf", shell=True, check=False)
 
 def perms():
     print("Setting correct permissions on system files...")

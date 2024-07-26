@@ -27,7 +27,7 @@ def packages():
         if next_step == "skip":
             return   
         run_command("sudo apt update -y")
-        run_command("sudo apt upgrade -y")
+        run_command("sudo apt full_upgrade -y")
         run_command("sudo apt autoremove -y")
         clear()
         print("Updates completed")
@@ -114,7 +114,7 @@ def services():
     clear()
     print("Services configured")
 def all():
-    forensic_questions()
+    #forensic_questions()
     packages()
     firewall()
     ssh()

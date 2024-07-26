@@ -35,6 +35,5 @@ def perms():
     print("Securing permission on system files...")
     run_command("sudo chmod 640 /etc/shadow")
 def all():
-    passwd_policies()
     misc_policies()
     perms()

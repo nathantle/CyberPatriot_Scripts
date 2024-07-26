@@ -7,6 +7,7 @@ def find_unauth_files():
     try:
         file_paths = subprocess.run(["locate", "'*.mp3'", "'*.mp4'", "'*.avi'", "'*.mkv'"], capture_output=True, text=True, check=True).stdout.split("\n")
     except Exception as e:
+        file_paths = []
         print(e)
 
     for file_path in file_paths:

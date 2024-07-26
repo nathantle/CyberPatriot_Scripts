@@ -48,7 +48,6 @@ if proceed != "q":
         output = subprocess.run("getent passwd | cut -d: -f1", shell=True, stdout=subprocess.PIPE)
         current_users = output.stdout.decode("utf-8").splitlines()
         current_users = list(set(current_users) - set(default_users) - {you})
-        current_users.remove(you)
         print(current_users)
     except Exception as e:
         print(e)

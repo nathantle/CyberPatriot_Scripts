@@ -87,14 +87,14 @@ if proceed != "q":
     for current_user in current_users:
         if current_user not in auth_admins and current_user not in auth_users:
             try:
-                process = subprocess.Popen(["sudo", "userdel", "--keep-home", current_user])
+                process = subprocess.Popen(["sudo", "userdel", current_user])
                 process.wait()
             except:
                 print("Error deleting user")
             current_users.remove(current_user)
 
     for current_user in current_users:
-        admin = util.is_user_admin()
+        admin = util.is_user_admin(current_user)
         if admin and current_user not in auth_admins:
             try:
                 process = subprocess.Popen(["sudo", "deluser", current_user, "sudo"])

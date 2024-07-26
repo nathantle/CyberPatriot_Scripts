@@ -1,5 +1,7 @@
 import subprocess
 
+default_users = ["lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd", "systemd-network", "systemd-oom", "tcpdump"]
+you = input("Enter your username").lower()
 # Manual Tasks - Configure Software and Updates
 print("")
 
@@ -45,6 +47,8 @@ if proceed != "q":
     try:
         output = subprocess.run("getent passwd | cut -d: -f1", shell=True, stdout=subprocess.PIPE)
         current_users = output.stdout.decode("utf-8").splitlines()
+        current_users = list(set(current_users) - set(default_users) - {you})
+        current_users.remove(you)
         print(current_users)
     except Exception as e:
         print(e)

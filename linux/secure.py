@@ -43,7 +43,7 @@ if proceed != "q":
 proceed = input("Press enter to proceed to handle users(q to stop)")
 if proceed != "q": 
     try:
-        output = subprocess.run("getent passwd | cut -d: -f1")
+        output = subprocess.run("getent passwd | cut -d: -f1", shell=True, capture_output=True)
         print(output)
     except Exception as e:
         print(e)

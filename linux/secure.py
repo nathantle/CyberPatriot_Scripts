@@ -7,6 +7,8 @@ current_users = []
 auth_admins = []
 auth_users = []
 
+sec_password = "Cyb3rP@triot25!"
+
 # Manual Tasks - Configure Software and Updates
 print("")
 
@@ -93,17 +95,21 @@ if proceed != "q":
                 print("Error deleting user")
             current_users.remove(current_user)
 
-    for current_user in current_users:
-        admin = util.is_user_admin(current_user)
-        if admin and current_user not in auth_admins:
+    for user in current_users:
+        admin = util.is_user_admin(user)
+        if admin and user not in auth_admins:
             try:
-                process = subprocess.Popen(["sudo", "deluser", current_user, "sudo"])
+                process = subprocess.Popen(["sudo", "deluser", user, "sudo"])
                 process.wait()
             except:
                 print("Error deleting user from group sudo")
-        elif not admin and current_user in auth_admins:
+        elif not admin and user in auth_admins:
             try:
-                process = subprocess.Popen(["sudo", "adduser", current_user, "sudo"])
+                process = subprocess.Popen(["sudo", "adduser", user, "sudo"])
                 process.wait()
             except:
-                print("Error deleting user from group sudo")
+                print("Error adding user to group sudo")
+
+        process = subprocess.Popen(["sudo", "passwd", user])
+        process.communicate(f"{user}:{sec_password}".encode())
+        process.wait()

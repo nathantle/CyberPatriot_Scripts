@@ -26,6 +26,24 @@ if proceed != "q":
 proceed = input("Press enter to proceed to configuring ssh(q to stop)")
 if proceed != "q": 
     try:
+        # Update and start ssh service
+        subprocess.run(["sudo", "apt", "install","ssh"])
         subprocess.run(["sudo", "systemctl", "enable","ssh"])
+        subprocess.run(["sudo", "systemctl", "start","ssh"])
+
+        # Disable SSH root login
+        subprocess.run(["sudo", "sed", "-i", "'s/PermitRootLogin yes/PermitRootLogin no/g'", "/etc/ssh/sshd_config"])
+
+        # Restart SSH
+        subprocess.run(["sudo", "systemctl", "restart", "ssh"])
     except Exception:
         print("Error configuring ssh")
+
+# Handle Users
+proceed = input("Press enter to proceed to handle users(q to stop)")
+if proceed != "q": 
+    try:
+        output = subprocess.run("getent passwd | cut -d: -f1")
+        print(output)
+    except:
+        print("Error handling users")

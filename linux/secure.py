@@ -43,8 +43,8 @@ if proceed != "q":
 proceed = input("Press enter to proceed to handle users(q to stop)")
 if proceed != "q": 
     try:
-        output = subprocess.run("getent passwd | cut -d: -f1", shell=True, capture_output=True)
-        print(output)
+        output = subprocess.run("getent passwd | cut -d: -f1", shell=True, stdout=subprocess.PIPE)
+        current_users = output.stdout.decode("utf-8").splitlines()
     except Exception as e:
         print(e)
         print("Error handling users")

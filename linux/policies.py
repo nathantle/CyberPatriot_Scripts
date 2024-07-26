@@ -22,7 +22,7 @@ def passwd_policies():
     # Extra dictionary-based password strength checks - enabled
     run_command("sudo sed -i '$ a password requisite pam_pwquality.so' /etc/pam.d/common-password")
 
-#    subprocess.run("sudo sed -i '/s'")
+    #subprocess.run("sudo sed -i '/s'")
 
 def misc_policies():
     run_command("sudo sed -i 's/!authenticate/authenticate/' /etc/sudoers")

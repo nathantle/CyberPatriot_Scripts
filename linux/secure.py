@@ -110,6 +110,26 @@ if proceed != "q":
             except:
                 print("Error adding user to group sudo")
 
-        process = subprocess.Popen(["sudo", "passwd", user])
-        process.communicate(f"{user}:{sec_password}".encode())
+        process = subprocess.Popen(["sudo", "passwd", user], stdin=subprocess.PIPE)
+        process.communicate(f"{sec_password}\n{sec_password}\n".encode())
         process.wait()
+
+# Configure misc security settings
+try:
+    process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
+    process.wait()
+
+    process = subprocess.Popen(["sudo", "sed", "-i", "/nullok/d", "/etc/pam.d/common-auth"]) # Null passwords do not authenticate
+    process.wait()
+
+    process = subprocess.Popen(["sudo", "sed", "-i", "s/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g", "/etc/sysctl.conf"]) # Addresss space layout randomization enabled
+    process.wait()
+
+    process = subprocess.Popen(["sudo", "sysctl", "--system"]) # Refreshes the change above
+    process.wait()
+
+    process = subprocess.Popen(["sudo", "echo", "1", ">", "/proc/sys/net/ipv4/tcp_syncookies"]) # IPv4 TCP SYN cookies have been enabled
+    process.wait()
+
+except Exception as e:
+    print(e)

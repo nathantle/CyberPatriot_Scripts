@@ -131,7 +131,7 @@ try:
     process = subprocess.Popen(["sudo", "echo", "1", ">", "/proc/sys/net/ipv4/tcp_syncookies"]) # IPv4 TCP SYN cookies have been enabled
     process.wait()
 
-    process = subprocess.Popen(["sudo", "sed", "-i", "s/.*net.ipv4.tcp_syncookies./net.ipv4.tcp_syncookies=1*"]) # IPv4 TCP SYN cookies have been enabled at boot
+    process = subprocess.Popen(["sudo", "sed", "-i", "s/.*net.ipv4.tcp_syncookies./net.ipv4.tcp_syncookies=1*", "/etc/sysctl.d/10-network-security.conf"]) # IPv4 TCP SYN cookies have been enabled at boot
     process.wait()
 
     process = subprocess.Popen(["sudo", "sysctl", "--system"]) # Refreshes the change above

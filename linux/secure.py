@@ -20,9 +20,11 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
                  "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", 
                  "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", 
                  "sshd", "systemd-network", "systemd-oom", "tcpdump")
+
 # String that stores the user account that should not have changes made to
 YOU = input("Enter your username: ").lower()
 
+# Declare lists to store current users, authorized admins and users
 current_users = []
 auth_admins = []
 auth_users = []
@@ -168,3 +170,18 @@ try:
 
 except Exception as e:
     print(e)
+
+# Look for unauthorized media files
+try:
+    process = subprocess.Popen(["sudo", "locate", "*.mp3"], text=True, stdout=subprocess.PIPE)
+    output, error = process.communicate()
+    file_paths = output.decode("utf-8").split_lines()
+
+    for file_path in file_paths:
+        delete = input("Do you want to delete the file @ ", file_path + "(y/n) ").lower()
+        if delete == "y":
+            process = subprocess.Popen(["sudo", "rm", file_path])
+except Exception as e:
+    print(e)
+    print("Error occured while searching for media files")
+print(END_MSG)

@@ -1,13 +1,33 @@
 import subprocess
 import util
-default_users = ["lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", "sshd", "systemd-network", "systemd-oom", "tcpdump"]
-you = input("Enter your username: ").lower()
+'''
+CyberPatriot Ubuntu Script
+Written by Nathan Le
+
+Designed to fix security issues and earn points in the CyberPatriot Competition
+'''
+
+END_MSG = '''
+Security Issues not automated yet:
+- System updates checked daily
+- Removing unauthorized software and files
+- SSH Root login disabled
+'''
+# Tuple of default users that should not have changes made to
+DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", "sync", "games", "man", "lp", 
+                 "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", 
+                 "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", 
+                 "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", 
+                 "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", 
+                 "sshd", "systemd-network", "systemd-oom", "tcpdump")
+# String that stores the user account that should not have changes made to
+YOU = input("Enter your username: ").lower()
 
 current_users = []
 auth_admins = []
 auth_users = []
 
-sec_password = "Cyb3rP@triot25!"
+SECURE_PASSWORD = "Cyb3rP@triot25!"
 
 # Manual Tasks - Configure Software and Updates
 print("")
@@ -18,7 +38,7 @@ if proceed != "q":
     try:
         process = subprocess.Popen(["sudo", "apt", "update"])
         process.wait()
-        process = subprocess.Popen(["sudo", "apt", "full_upgrade"])
+        process = subprocess.Popen(["sudo", "apt", "upgrade"])
         process.wait()
         process = subprocess.Popen(["sudo", "apt", "autoremove"])
         process.wait()
@@ -63,13 +83,15 @@ if proceed != "q":
         process = subprocess.Popen("getent passwd | cut -d: -f1", shell=True, stdout=subprocess.PIPE)
         output, error = process.communicate()
         current_users = output.decode("utf-8").splitlines()
-        current_users = list(set(current_users) - set(default_users) - {you})
+        # Fills array of current users on the machine
+        current_users = list(set(current_users) - set(DEFAULT_USERS) - {YOU})
     except Exception as e:
         print(e)
         print("Error handling users")
 
+    # Fills list of authorized Admins
     while True:
-        auth_admin = input("Enter authorized administrator(exclude yourself): ")
+        auth_admin = input("Enter authorized administrator(exclude yourself, q to stop): ")
         if auth_admin == "q":
             break
         elif auth_admin == "r" and auth_admins:
@@ -77,8 +99,9 @@ if proceed != "q":
         else:
             auth_admins.append(auth_admin)
 
+    # Fills list of authorized users
     while True:
-        auth_user = input("Enter authorized user(exclude yourself): ")
+        auth_user = input("Enter authorized user(exclude yourself, q to stop): ")
         if auth_user == "q":
             break
         elif auth_user == "r" and auth_users:
@@ -89,6 +112,7 @@ if proceed != "q":
     for current_user in current_users:
         if current_user not in auth_admins and current_user not in auth_users:
             try:
+                print("Deleting user " + current_user)
                 process = subprocess.Popen(["sudo", "userdel", current_user])
                 process.wait()
             except:
@@ -111,8 +135,13 @@ if proceed != "q":
                 print("Error adding user to group sudo")
 
         process = subprocess.Popen(["sudo", "passwd", user], stdin=subprocess.PIPE)
-        process.communicate(f"{sec_password}\n{sec_password}\n".encode())
+        process.communicate(f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n".encode())
         process.wait()
+
+user_to_add = input("Add user(q to stop): ")
+while user_to_add != "q":
+    process = subprocess.Popen(["sudo", "useradd", user_to_add])
+    user_to_add = input("Add user(q to stop): ")
 
 # Configure misc security settings
 try:

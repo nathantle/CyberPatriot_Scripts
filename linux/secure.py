@@ -173,12 +173,12 @@ except Exception as e:
 
 # Look for unauthorized media files
 try:
-    process = subprocess.Popen(["sudo", "locate", "*.mp3"], text=True, stdout=subprocess.PIPE)
+    process = subprocess.Popen(["sudo", "locate", "*.mp3"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = process.communicate()
-    file_paths = output.decode("utf-8").split_lines()
+    file_paths = output.splitlines()
 
     for file_path in file_paths:
-        delete = input("Do you want to delete the file @ ", file_path + "(y/n) ").lower()
+        delete = input("Do you want to delete the file @ " + file_path + "(y/n) ").lower()
         if delete == "y":
             process = subprocess.Popen(["sudo", "rm", file_path])
 except Exception as e:

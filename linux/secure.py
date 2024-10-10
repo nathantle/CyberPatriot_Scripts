@@ -12,6 +12,7 @@ Security Issues not automated yet:
 - System updates checked daily
 - Removing unauthorized software and files
 - SSH Root login disabled
+- Password and account policies
 '''
 # Tuple of default users that should not have changes made to
 DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", "sync", "games", "man", "lp", 
@@ -20,6 +21,9 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
                  "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", 
                  "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", 
                  "sshd", "systemd-network", "systemd-oom", "tcpdump")
+
+BAD_SERVICES = ("nginx")
+BAD_APPS = ("aisleroot", "wireshark", "ophcrack", "")
 
 # String that stores the user account that should not have changes made to
 YOU = input("Enter your username: ").lower()
@@ -125,13 +129,13 @@ if proceed != "q":
         admin = util.is_user_admin(user)
         if admin and user not in auth_admins:
             try:
-                process = subprocess.Popen(["sudo", "deluser", user, "sudo"])
+                process = subprocess.Popen(["sudo", "gpasswd", "-d", user, "sudo"])
                 process.wait()
             except:
                 print("Error deleting user from group sudo")
         elif not admin and user in auth_admins:
             try:
-                process = subprocess.Popen(["sudo", "adduser", user, "sudo"])
+                process = subprocess.Popen(["sudo", "gpasswd", "-a", user, "sudo"])
                 process.wait()
             except:
                 print("Error adding user to group sudo")
@@ -143,6 +147,7 @@ if proceed != "q":
 user_to_add = input("Add user(q to stop): ")
 while user_to_add != "q":
     process = subprocess.Popen(["sudo", "useradd", user_to_add])
+    process.wait()
     user_to_add = input("Add user(q to stop): ")
 
 # Configure misc security settings
@@ -151,10 +156,7 @@ try:
     process.wait()
 
     process = subprocess.Popen(["sudo", "sed", "-i", "/nullok/d", "/etc/pam.d/common-auth"]) # Null passwords do not authenticate
-    process.wait()
-
     process = subprocess.Popen(["sudo", "sed", "-i", "s/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g", "/etc/sysctl.conf"]) # Addresss space layout randomization enabled
-    process.wait()
 
     process = subprocess.Popen(["sudo", "sysctl", "--system"]) # Refreshes the change above
     process.wait()
@@ -168,12 +170,16 @@ try:
     process = subprocess.Popen(["sudo", "sysctl", "--system"]) # Refreshes the change above
     process.wait()
 
+    process = subprocess.Popen(["sudo", "chmod", "-R", "640", "/etc/shadow" ]) # Sets secure permissions on shadow file
+    process.wait()
+
 except Exception as e:
     print(e)
 
 # Look for unauthorized media files
 try:
     process = subprocess.Popen(["sudo", "locate", "*.mp3"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process.wait()
     output, error = process.communicate()
     file_paths = output.splitlines()
 
@@ -181,6 +187,7 @@ try:
         delete = input("Do you want to delete the file @ " + file_path + "(y/n) ").lower()
         if delete == "y":
             process = subprocess.Popen(["sudo", "rm", file_path])
+            process.wait()
 except Exception as e:
     print(e)
     print("Error occured while searching for media files")

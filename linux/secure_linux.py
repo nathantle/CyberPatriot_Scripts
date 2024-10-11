@@ -196,4 +196,11 @@ try:
 except Exception as e:
     print(e)
     print("Error occured while searching for media files")
+
+# Try to delete the list of unauthorized apps
+for app in BAD_APPS:
+    process = subprocess.Popen(["sudo", "apt", "purge", app])
+    process.wait()
+process = subprocess.Popen(["sudo", "apt", "autoremove"])    
+
 print(END_MSG)

@@ -1,7 +1,7 @@
 import subprocess
 import util
 '''
-CyberPatriot Ubuntu Script
+CyberPatriot Mint Script
 Written by Nathan Le
 
 Designed to fix security issues and earn points in the CyberPatriot Competition
@@ -20,7 +20,7 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
                  "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", 
                  "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", 
                  "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", 
-                 "sshd", "systemd-network", "systemd-oom", "tcpdump", "__flatpak", "ntp")
+                 "sshd", "systemd-network", "systemd-oom", "tcpdump", "_flatpak", "fwupd-refresh", "dovecot", "dovenull")
 
 BAD_SERVICES = ("nginx")
 BAD_APPS = ("aisleroot", "wireshark", "ophcrack", "")
@@ -157,6 +157,8 @@ try:
 
     process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
     process.wait()
+
+    # "sudo sed -i 's/^PASS\_MAX\_DAYS.*/PASS_MAX_DAYS\t90/' /etc/login.defs"
 
     process = subprocess.Popen(["sudo", "sed", "-i", "/nullok/d", "/etc/pam.d/common-auth"]) # Null passwords do not authenticate
     process = subprocess.Popen(["sudo", "sed", "-i", "s/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g", "/etc/sysctl.conf"]) # Addresss space layout randomization enabled

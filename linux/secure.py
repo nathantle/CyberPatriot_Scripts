@@ -20,7 +20,7 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
                  "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", 
                  "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", 
                  "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", 
-                 "sshd", "systemd-network", "systemd-oom", "tcpdump")
+                 "sshd", "systemd-network", "systemd-oom", "tcpdump", "__flatpak", "ntp")
 
 BAD_SERVICES = ("nginx")
 BAD_APPS = ("aisleroot", "wireshark", "ophcrack", "")
@@ -152,6 +152,9 @@ while user_to_add != "q":
 
 # Configure misc security settings
 try:
+    process = subprocess.Popen(["sudo", "pam-auth-update"]) # Updates pam modules
+    process.wait()
+
     process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
     process.wait()
 

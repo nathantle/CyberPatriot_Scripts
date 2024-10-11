@@ -23,7 +23,7 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
                  "sshd", "systemd-network", "systemd-oom", "tcpdump", "_flatpak", "fwupd-refresh", "dovecot", "dovenull")
 
 BAD_SERVICES = ("nginx")
-BAD_APPS = ("aisleroot", "wireshark", "ophcrack", "")
+BAD_APPS = ("aisleroot", "wireshark", "ophcrack", "ettercap-common", "ettercap-graphical", "ettercap-text-only", "deluge-gtk", "deluge")
 
 # String that stores the user account that should not have changes made to
 YOU = input("Enter your username: ").lower()
@@ -196,4 +196,11 @@ try:
 except Exception as e:
     print(e)
     print("Error occured while searching for media files")
+
+# Try to delete the list of unauthorized apps
+for app in BAD_APPS:
+    process = subprocess.Popen(["sudo", "apt", "purge", app])
+    process.wait()
+process = subprocess.Popen(["sudo", "apt", "autoremove"])    
+
 print(END_MSG)

@@ -23,7 +23,7 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
                  "sshd", "systemd-network", "systemd-oom", "tcpdump", "_flatpak", "fwupd-refresh", "dovecot", "dovenull")
 
 BAD_SERVICES = ("nginx")
-BAD_APPS = ("aisleroot", "wireshark", "ophcrack", "")
+BAD_APPS = ("aisleroot", "wireshark", "ophcrack", "ettercap-common", "ettercap-graphical", "ettercap-text-only", "deluge-gtk", "deluge")
 
 # String that stores the user account that should not have changes made to
 YOU = input("Enter your username: ").lower()

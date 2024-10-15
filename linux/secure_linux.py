@@ -161,18 +161,17 @@ try:
     # "sudo sed -i 's/^PASS\_MAX\_DAYS.*/PASS_MAX_DAYS\t90/' /etc/login.defs"
 
     process = subprocess.Popen(["sudo", "sed", "-i", "/nullok/d", "/etc/pam.d/common-auth"]) # Null passwords do not authenticate
-    process = subprocess.Popen(["sudo", "sed", "-i", "s/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g", "/etc/sysctl.conf"]) # Addresss space layout randomization enabled
-
-    process = subprocess.Popen(["sudo", "sysctl", "--system"]) # Refreshes the change above
     process.wait()
-
+    process = subprocess.Popen(["sudo", "sed", "-i", "s/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g", "/etc/sysctl.conf"]) # Addresss space layout randomization enabled
+    process.wait()
+    process = subprocess.Popen(["sudo", "sed", "-i", "'s/PermitRootLogin yes/PermitRootLogin no/g'", "/etc/ssh/sshd_config"])
+    process.wait()
     process = subprocess.Popen(["sudo", "echo", "1", ">", "/proc/sys/net/ipv4/tcp_syncookies"]) # IPv4 TCP SYN cookies have been enabled
     process.wait()
-
     process = subprocess.Popen(["sudo", "sed", "-i", "s/.*net.ipv4.tcp_syncookies./net.ipv4.tcp_syncookies=1*", "/etc/sysctl.d/10-network-security.conf"]) # IPv4 TCP SYN cookies have been enabled at boot
     process.wait()
 
-    process = subprocess.Popen(["sudo", "sysctl", "--system"]) # Refreshes the change above
+    process = subprocess.Popen(["sudo", "sysctl", "--system"]) # Refreshes the changes above
     process.wait()
 
     process = subprocess.Popen(["sudo", "chmod", "-R", "640", "/etc/shadow" ]) # Sets secure permissions on shadow file

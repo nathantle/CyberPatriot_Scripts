@@ -8,8 +8,8 @@ def clear():
 def forensic_questions():
     try:
         print("Opening Forensic Questions")
-        run_command("nano Desktop/Forensic Question 1")
-        run_command("nano Desktop/Forensic Question 2")
+        run_command("nano Desktop/\"Forensic Question 1\"")
+        run_command("nano Desktop/\"Forensic Question 2\"")
         input("Press enter to continue")
     except Exception as e:
         print(e)

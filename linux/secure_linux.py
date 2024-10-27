@@ -1,5 +1,3 @@
-import subprocess
-import util
 '''
 CyberPatriot Ubuntu Script
 Written by Nathan Le
@@ -7,6 +5,8 @@ Written by Nathan Le
 Designed to fix security issues and earn points in the CyberPatriot Competition
 '''
 
+import subprocess
+import util
 END_MSG = '''
 Security Issues not automated yet:
 - System updates checked daily
@@ -20,7 +20,7 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
                  "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", 
                  "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", 
                  "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", 
-                 "sshd", "systemd-network", "systemd-oom", "tcpdump", "_flatpak", "fwupd-refresh", "dovecot", "dovenull")
+                 "sshd", "systemd-network", "systemd-oom", "tcpdump", "_flatpak", "fwupd-refresh", "dovecot", "dovenull", "ntp")
 BAD_SERVICES = ("nginx")
 BAD_APPS = ("aisleroot", "wireshark", "ophcrack", "ettercap-common", "ettercap-graphical", "ettercap-text-only", "deluge-gtk", "deluge", "gnome-mines", "gnome-mahjonng")
 

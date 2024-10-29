@@ -1,10 +1,9 @@
 '''
-CyberPatriot Ubuntu Script
+CyberPatriot Linux Script
 Written by Nathan Le
 
 Designed to fix security issues and earn points in the CyberPatriot Competition
 '''
-
 import subprocess
 import util
 END_MSG = '''
@@ -21,7 +20,7 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
                  "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", 
                  "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", 
                  "sshd", "systemd-network", "systemd-oom", "tcpdump", "_flatpak", "fwupd-refresh", "dovecot", "dovenull", "ntp")
-BAD_SERVICES = ("nginx")
+BAD_SERVICES = ("nginx", "apache2")
 BAD_APPS = ("aisleroot", "wireshark", "ophcrack", "ettercap-common", "ettercap-graphical", "ettercap-text-only", "deluge-gtk", "deluge", "gnome-mines", "gnome-mahjonng")
 
 # String that stores the user account that should not have changes made to
@@ -153,8 +152,9 @@ while user_to_add != "q":
 try:
     process = subprocess.Popen(["sudo", "pam-auth-update"]) # Updates pam modules
     process.wait()
-
-    process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
+    
+    # Maybe locks root account sudo?
+    #process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
     process.wait()
 
     # "sudo sed -i 's/^PASS\_MAX\_DAYS.*/PASS_MAX_DAYS\t90/' /etc/login.defs"

@@ -21,7 +21,7 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
                  "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", 
                  "sshd", "systemd-network", "systemd-oom", "tcpdump", "_flatpak", "fwupd-refresh", "dovecot", "dovenull", "ntp")
 BAD_SERVICES = ("nginx", "apache2")
-BAD_APPS = ("aisleroot", "wireshark", "ophcrack", "ettercap-common", "ettercap-graphical", "ettercap-text-only", "deluge-gtk", "deluge", "gnome-mines", "gnome-mahjonng")
+BAD_APPS = ("aisleriot", "wireshark", "ophcrack", "ettercap-common", "ettercap-graphical", "ettercap-text-only", "deluge-gtk", "deluge", "gnome-mines", "gnome-mahjonng")
 
 # String that stores the user account that should not have changes made to
 YOU = input("Enter your username: ").lower()

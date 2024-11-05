@@ -42,61 +42,63 @@ SECURE_PASSWORD = "Cyb3rP@triot25!"
 proceed = input("Press enter to proceed to updates(s to skip)")
 if proceed != "s": 
     try:
-        # Updates packages
-        process = subprocess.run("sudo apt upgrade -y")
-        # Removes any leftover/unneccesary packages
-        process = subprocess.run("sudo apt autoremove -y")
-    except Exception:
+        package_manager = input("Enter the package manager used on this system: ").lower()
+        if package_manager not in PACKAGE_MANAGERS:
+            print("You did not enter a valid package manager, restart the script")
+        else:
+            # Updates packages
+            subprocess.run(f"sudo {package_manager} upgrade -y", shell=True)
+            # Removes any leftover/unneccesary packages
+            subprocess.run(f"sudo {package_manager} autoremove -y", shell=True)
+    except Exception as e:
         print("Error updating packages")
+        print(e)
 
 # Configure Firewall
 proceed = input("Press enter to proceed to configuring firewall(s to skip)")
 if proceed != "s": 
     try:
         # Enables UFW
-        process = subprocess.Popen(["sudo", "ufw", "enable"])
-        process.wait()
+        subprocess.run("sudo ufw enable", shell=True)
 
         ssh_crit_serv = input("Is SSH a critical service (y/n)")
         if ssh_crit_serv.lower() == "y":
             # Allows SSH traffic
-            process = subprocess.Popen(["sudo", "ufw", "allow", "ssh"])
-            process.wait()
-    except Exception:
+            subprocess.run("sudo ufw allow ssh", shell=True)
+    except Exception as e:
         print("Error configuring firewall")
+        print(e)
 
 # Configure ssh
 proceed = input("Press enter to proceed to configuring ssh(s to skip)")
 if proceed != "s": 
     try:
         # Install/update and start ssh service
-        process = subprocess.Popen(["sudo", "apt", "install","ssh"])
-        process.wait()
-        process = subprocess.Popen(["sudo", "systemctl", "enable","ssh"])
-        process.wait()
-        process = subprocess.Popen(["sudo", "systemctl", "start","ssh"])
-        process.wait()
+        subprocess.run("sudo apt install ssh", shell=True)
+        subprocess.run("sudo systemctl enable ssh", shell=True)
+        subprocess.run("sudo systemctl start ssh", shell=True)
 
         # Disable SSH root login
-        process = subprocess.Popen(["sudo", "sed", "-i", "'s/PermitRootLogin yes/PermitRootLogin no/g'", "/etc/ssh/sshd_config"])
-        process.wait()
+        subprocess.run("sudo sed -i 's/^PermitRootLogin .*/PermitRootLogin no/' /etc/ssh/sshd_config", shell=True)
 
         # Restart SSH
-        process = subprocess.Popen(["sudo", "systemctl", "restart", "ssh"])
-        process.wait()
-    except Exception:
-        print("Error configuring ssh")
+        subprocess.run("sudo systemctl restart ssh", shell=True)
+    except Exception as e:
+        print(f"Error configuring ssh\n{e}")
 
 # Handle Users
 proceed = input("Press enter to proceed to handle users(q to stop)")
 if proceed != "q": 
     try:
         # List of current users on machine
-        process = subprocess.Popen("getent passwd | cut -d: -f1", shell=True, stdout=subprocess.PIPE)
-        output, error = process.communicate()
-        current_users = output.decode("utf-8").splitlines()
+        process = subprocess.run("getent passwd | cut -d: -f1", 
+                                   shell=True, 
+                                   stdout=subprocess.PIPE, 
+                                   stderr=subprocess.PIPE, 
+                                   text=True)
+        current_users = process.stdout.splitlines()
 
-        # Fills array of current users on the machine
+        # Subtracts system and default users
         current_users = list(set(current_users) - set(DEFAULT_USERS) - {YOU})
     except Exception as e:
         print(e)
@@ -131,33 +133,28 @@ if proceed != "q":
             try:
                 print("Deleting user " + current_user)
                 # Deleting user
-                process = subprocess.Popen(["sudo", "userdel", current_user])
-                process.wait()
+                subprocess.run(f"sudo userdel {current_user}", shell=True)
                 current_users.remove(current_user)
             except:
                 print("Error deleting user")
 
-    for user in current_users:
-        admin = util.is_user_admin(user)
-        if admin and user not in auth_admins:
+    for current_user in current_users:
+        admin = util.is_user_admin(current_user)
+        if admin and current_user not in auth_admins:
             try:
                 # Make user not administrator
-                process = subprocess.Popen(["sudo", "gpasswd", "-d", user, "sudo"])
-                process.wait()
+                subprocess.run("sudo gpasswd -d {current_user} sudo", shell=True)
             except:
                 print("Error deleting user from group sudo")
-        elif not admin and user in auth_admins:
+        elif not admin and current_user in auth_admins:
             try:
                 # Make user administrator
-                process = subprocess.Popen(["sudo", "gpasswd", "-a", user, "sudo"])
-                process.wait()
+                subprocess.run("sudo gpasswd -a {current_user} sudo", shell=True)
             except:
                 print("Error adding user to group sudo")
 
         # Sets password for every user except default user
-        process = subprocess.Popen(["sudo", "passwd", user], stdin=subprocess.PIPE)
-        process.communicate(f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n".encode())
-        process.wait()
+        subprocess.run(f"sudo passwd {current_user}", input=f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n", text=True, check=True)
 
 # Configure misc security settings
 try:

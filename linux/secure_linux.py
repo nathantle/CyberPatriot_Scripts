@@ -143,24 +143,40 @@ if proceed != "q":
         if admin and current_user not in auth_admins:
             try:
                 # Make user not administrator
-                subprocess.run("sudo gpasswd -d {current_user} sudo", shell=True)
+                subprocess.run(f"sudo gpasswd -d {current_user} sudo", shell=True)
             except:
                 print("Error deleting user from group sudo")
         elif not admin and current_user in auth_admins:
             try:
                 # Make user administrator
-                subprocess.run("sudo gpasswd -a {current_user} sudo", shell=True)
+                subprocess.run(f"sudo gpasswd -a {current_user} sudo", shell=True)
             except:
                 print("Error adding user to group sudo")
 
         # Sets password for every user except default user
-        subprocess.run(f"sudo passwd {current_user}", input=f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n", text=True, check=True)
+        subprocess.run(f"sudo passwd {current_user}", input=f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n", shell=True, text=True, check=True)
 
 # Configure misc security settings
 try:
-    process = subprocess.Popen(["sudo", "pam-auth-update"]) # Updates pam modules
-    process.wait()
+    faillock = """Name: Enforce failed login attempt counter
+    Default: no
+    Priority: 0
+    Auth-Type: Primary
+    Auth:
+      [default=die] pam_faillock.so authfail
+      sufficient pam_faillock.so authsucc"""
     
+    faillock-notify = """Name: Notify on failed login attempts
+    Default: no
+    Priority: 1024
+    Auth-Type: Primary
+    Auth:
+      requisite pam_faillock.so preauth"""
+    subprocess.run("sudo touch /usr/share/pam-configs/faillock")
+    util.write_to_file("/usr/share/pam-configs/faillock", faillock)
+    subprocess.run("sudo touch /usr/share/pam-configs/faillock-notify")
+    util.write_to_file("/usr/share/pam-configs/faillock-notify", faillock-notify)
+    subprocess.run("sudo pam-auth-update", shell=True) # Updates pam modules
     # Maybe locks root account sudo?
     # process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
     # process.wait()

@@ -148,7 +148,7 @@ while user_to_add != "q":
     process.wait()
     user_to_add = input("Add user(q to stop): ")
 
-'''
+
 # Configure misc security settings
 try:
     process = subprocess.Popen(["sudo", "pam-auth-update"]) # Updates pam modules
@@ -179,7 +179,7 @@ try:
 
 except Exception as e:
     print(e)
-'''
+
 # Look for unauthorized media files
 try:
     process = subprocess.Popen(["sudo", "locate", "*.mp3"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

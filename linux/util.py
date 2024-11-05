@@ -12,8 +12,4 @@ def is_user_admin(user):
         print(e)
 
 def write_to_file(file_path, content):
-    try:
-        with open(file_path, 'w') as file:
-            file.write(content)
-    except IOError as e:
-        print(f'An error occurred while writing to {file_path}: {e}')
+    subprocess.run(f"sudo echo \"{content}\" > {file_path}", shell=True)

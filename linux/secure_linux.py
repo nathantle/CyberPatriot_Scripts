@@ -166,17 +166,24 @@ try:
       [default=die] pam_faillock.so authfail
       sufficient pam_faillock.so authsucc"""
     
-    faillock-notify = """Name: Notify on failed login attempts
+    faillock_notify = """Name: Notify on failed login attempts
     Default: no
     Priority: 1024
     Auth-Type: Primary
     Auth:
       requisite pam_faillock.so preauth"""
-    subprocess.run("sudo touch /usr/share/pam-configs/faillock")
+    
+    # Sets account policy
+    subprocess.run("sudo touch /usr/share/pam-configs/faillock", shell=True)
     util.write_to_file("/usr/share/pam-configs/faillock", faillock)
-    subprocess.run("sudo touch /usr/share/pam-configs/faillock-notify")
-    util.write_to_file("/usr/share/pam-configs/faillock-notify", faillock-notify)
-    subprocess.run("sudo pam-auth-update", shell=True) # Updates pam modules
+
+    # Sets account policy
+    subprocess.run("sudo touch /usr/share/pam-configs/faillock_notify", shell=True)
+    util.write_to_file("/usr/share/pam-configs/faillock_notify", faillock_notify)
+
+    # Updates pam modules
+    subprocess.run("sudo pam-auth-update", shell=True)
+
     # Maybe locks root account sudo?
     # process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
     # process.wait()
@@ -195,9 +202,8 @@ try:
 
     process = subprocess.Popen(["sudo", "sysctl", "--system"]) # Refreshes the changes above
     process.wait()
-
-    process = subprocess.Popen(["sudo", "chmod", "-R", "640", "/etc/shadow" ]) # Sets secure permissions on shadow file
-    process.wait()
+    # Sets secure permissions on shadow file
+    subprocess.run("sudo chmod -R 640 /etc/shadow", shell=True) 
 
 except Exception as e:
     print(e)

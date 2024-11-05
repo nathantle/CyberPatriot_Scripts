@@ -43,7 +43,7 @@ proceed = input("Press enter to proceed to updates(s to skip)")
 if proceed != "s": 
     try:
         # Updates packages
-        process = subprocess.run("sudo", "apt", "upgrade", "-y")
+        process = subprocess.run("sudo apt upgrade -y")
         # Removes any leftover/unneccesary packages
         process = subprocess.run("sudo apt autoremove -y")
     except Exception:

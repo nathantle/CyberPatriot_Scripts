@@ -141,13 +141,13 @@ if proceed != "q":
         process = subprocess.Popen(["sudo", "passwd", user], stdin=subprocess.PIPE)
         process.communicate(f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n".encode())
         process.wait()
-
+'''
 user_to_add = input("Add user(q to stop): ")
 while user_to_add != "q":
     process = subprocess.Popen(["sudo", "useradd", user_to_add])
     process.wait()
     user_to_add = input("Add user(q to stop): ")
-
+'''
 
 # Configure misc security settings
 try:

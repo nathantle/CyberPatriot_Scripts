@@ -180,6 +180,8 @@ try:
 except Exception as e:
     print(e)
 
+# Error somehow occurs here
+'''
 # Look for unauthorized media files
 try:
     process = subprocess.Popen(["sudo", "locate", "*.mp3"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -203,3 +205,4 @@ for app in BAD_APPS:
 process = subprocess.Popen(["sudo", "apt", "autoremove"])    
 
 print(END_MSG)
+'''

@@ -20,8 +20,14 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
                  "usbmux", "dnsmasq", "kernoops", "avahi", "cups-pk-helper", "rtkit", "whoopsie", "sssd", "speech-dispatcher", 
                  "nm-openvpn", "saned", "colord", "geoclue", "pulse", "gnome-initial-setup", "hplip", "gdm", "_rpc", "statd", 
                  "sshd", "systemd-network", "systemd-oom", "tcpdump", "_flatpak", "fwupd-refresh", "dovecot", "dovenull", "ntp", "ftp")
+# Tuple of common bad services
 BAD_SERVICES = ("nginx", "apache2")
+
+# Tuple of common bad apps
 BAD_APPS = ("aisleriot", "wireshark", "ophcrack", "ettercap-common", "ettercap-graphical", "ettercap-text-only", "deluge-gtk", "deluge", "gnome-mines", "gnome-mahjonng")
+
+# Tuple of possible package managers
+PACKAGE_MANAGERS = ("apt", "yum", "apt-get")
 
 # String that stores the user account that should not have changes made to
 YOU = input("Enter your username: ").lower()
@@ -30,39 +36,40 @@ YOU = input("Enter your username: ").lower()
 current_users = []
 auth_admins = []
 auth_users = []
+# Final string that stores a secure password
+SECURE_PASSWORD = "Cyb3rP@triot25!" 
 
-SECURE_PASSWORD = "Cyb3rP@triot25!"
-
-# Manual Tasks - Configure Software and Updates
-print("")
-
-proceed = input("Press enter to proceed to updates(q to stop)")
-if proceed != "q": 
-    # Updates
+proceed = input("Press enter to proceed to updates(s to skip)")
+if proceed != "s": 
     try:
-        process = subprocess.Popen(["sudo", "apt", "update"])
-        process.wait()
-        process = subprocess.Popen(["sudo", "apt", "upgrade"])
-        process.wait()
-        process = subprocess.Popen(["sudo", "apt", "autoremove"])
-        process.wait()
+        # Updates packages
+        process = subprocess.run("sudo", "apt", "upgrade", "-y")
+        # Removes any leftover/unneccesary packages
+        process = subprocess.run("sudo apt autoremove -y", shell=True)
     except Exception:
         print("Error updating packages")
 
 # Configure Firewall
-proceed = input("Press enter to proceed to configuring firewall(q to stop)")
-if proceed != "q": 
+proceed = input("Press enter to proceed to configuring firewall(s to skip)")
+if proceed != "s": 
     try:
+        # Enables UFW
         process = subprocess.Popen(["sudo", "ufw", "enable"])
         process.wait()
+
+        ssh_crit_serv = input("Is SSH a critical service (y/n)")
+        if ssh_crit_serv.lower() == "y":
+            # Allows SSH traffic
+            process = subprocess.Popen(["sudo", "ufw", "allow", "ssh"])
+            process.wait()
     except Exception:
         print("Error configuring firewall")
 
 # Configure ssh
-proceed = input("Press enter to proceed to configuring ssh(q to stop)")
-if proceed != "q": 
+proceed = input("Press enter to proceed to configuring ssh(s to skip)")
+if proceed != "s": 
     try:
-        # Update and start ssh service
+        # Install/update and start ssh service
         process = subprocess.Popen(["sudo", "apt", "install","ssh"])
         process.wait()
         process = subprocess.Popen(["sudo", "systemctl", "enable","ssh"])
@@ -84,39 +91,46 @@ if proceed != "q":
 proceed = input("Press enter to proceed to handle users(q to stop)")
 if proceed != "q": 
     try:
+        # List of current users on machine
         process = subprocess.Popen("getent passwd | cut -d: -f1", shell=True, stdout=subprocess.PIPE)
         output, error = process.communicate()
         current_users = output.decode("utf-8").splitlines()
+
         # Fills array of current users on the machine
         current_users = list(set(current_users) - set(DEFAULT_USERS) - {YOU})
     except Exception as e:
         print(e)
-        print("Error handling users")
 
     # Fills list of authorized Admins
     while True:
-        auth_admin = input("Enter authorized administrator(exclude yourself, q to stop): ")
-        if auth_admin == "q":
+        auth_admin = input("Enter authorized administrator(exclude yourself, type \"d\" when done, \"r\" to remove last entry): ")
+        if auth_admin == "d":
             break
         elif auth_admin == "r" and auth_admins:
+            # Removes last entry
             auth_admins.pop()
         else:
+            # Adds user to list
             auth_admins.append(auth_admin)
 
     # Fills list of authorized users
     while True:
-        auth_user = input("Enter authorized user(exclude yourself, q to stop): ")
-        if auth_user == "q":
+        auth_user = input("Enter authorized user(type \"d\" when done, \"r\" to remove last entry): ")
+        if auth_user == "d":
             break
         elif auth_user == "r" and auth_users:
+            # Removes last entry
             auth_users.pop()
         else:
+            # Adds user to list
             auth_users.append(auth_user)
 
     for current_user in current_users:
+        # If current_user is not authorized administrator or user
         if current_user not in auth_admins and current_user not in auth_users:
             try:
                 print("Deleting user " + current_user)
+                # Deleting user
                 process = subprocess.Popen(["sudo", "userdel", current_user])
                 process.wait()
                 current_users.remove(current_user)
@@ -144,13 +158,6 @@ if proceed != "q":
         process = subprocess.Popen(["sudo", "passwd", user], stdin=subprocess.PIPE)
         process.communicate(f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n".encode())
         process.wait()
-'''
-user_to_add = input("Add user(q to stop): ")
-while user_to_add != "q":
-    process = subprocess.Popen(["sudo", "useradd", user_to_add])
-    process.wait()
-    user_to_add = input("Add user(q to stop): ")
-'''
 
 # Configure misc security settings
 try:
@@ -166,8 +173,6 @@ try:
     process = subprocess.Popen(["sudo", "sed", "-i", "/nullok/d", "/etc/pam.d/common-auth"]) # Null passwords do not authenticate
     process.wait()
     process = subprocess.Popen(["sudo", "sed", "-i", "s/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g", "/etc/sysctl.conf"]) # Addresss space layout randomization enabled
-    process.wait()
-    process = subprocess.Popen(["sudo", "sed", "-i", "'s/PermitRootLogin yes/PermitRootLogin no/g'", "/etc/ssh/sshd_config"])
     process.wait()
     process = subprocess.Popen(["sudo", "echo", "1", ">", "/proc/sys/net/ipv4/tcp_syncookies"]) # IPv4 TCP SYN cookies have been enabled
     process.wait()

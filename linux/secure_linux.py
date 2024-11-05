@@ -119,25 +119,28 @@ if proceed != "q":
                 print("Deleting user " + current_user)
                 process = subprocess.Popen(["sudo", "userdel", current_user])
                 process.wait()
+                current_users.remove(current_user)
             except:
                 print("Error deleting user")
-            current_users.remove(current_user)
 
     for user in current_users:
         admin = util.is_user_admin(user)
         if admin and user not in auth_admins:
             try:
+                # Make user not administrator
                 process = subprocess.Popen(["sudo", "gpasswd", "-d", user, "sudo"])
                 process.wait()
             except:
                 print("Error deleting user from group sudo")
         elif not admin and user in auth_admins:
             try:
+                # Make user administrator
                 process = subprocess.Popen(["sudo", "gpasswd", "-a", user, "sudo"])
                 process.wait()
             except:
                 print("Error adding user to group sudo")
 
+        # Sets password for every user except default user
         process = subprocess.Popen(["sudo", "passwd", user], stdin=subprocess.PIPE)
         process.communicate(f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n".encode())
         process.wait()
@@ -155,8 +158,8 @@ try:
     process.wait()
     
     # Maybe locks root account sudo?
-    #process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
-    process.wait()
+    # process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
+    # process.wait()
 
     # "sudo sed -i 's/^PASS\_MAX\_DAYS.*/PASS_MAX_DAYS\t90/' /etc/login.defs"
 
@@ -170,6 +173,7 @@ try:
     process.wait()
     process = subprocess.Popen(["sudo", "sed", "-i", "s/.*net.ipv4.tcp_syncookies./net.ipv4.tcp_syncookies=1*", "/etc/sysctl.d/10-network-security.conf"]) # IPv4 TCP SYN cookies have been enabled at boot
     process.wait()
+    # process = subprocess.Popen(["sudo", "sed", "-i"] )
 
     process = subprocess.Popen(["sudo", "sysctl", "--system"]) # Refreshes the changes above
     process.wait()
@@ -204,5 +208,5 @@ for app in BAD_APPS:
     process.wait()
 process = subprocess.Popen(["sudo", "apt", "autoremove"])    
 
-print(END_MSG)
 '''
+print(END_MSG)

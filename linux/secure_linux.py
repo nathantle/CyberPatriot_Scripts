@@ -45,7 +45,7 @@ if proceed != "s":
         # Updates packages
         process = subprocess.run("sudo", "apt", "upgrade", "-y")
         # Removes any leftover/unneccesary packages
-        process = subprocess.run("sudo apt autoremove -y", shell=True)
+        process = subprocess.run("sudo apt autoremove -y")
     except Exception:
         print("Error updating packages")
 

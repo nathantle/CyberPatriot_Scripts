@@ -154,7 +154,7 @@ if proceed != "q":
                 print("Error adding user to group sudo")
 
         # Sets password for every user except default user
-        subprocess.run(f"sudo passwd {current_user}", input=f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n", shell=True, text=True, check=True)
+        subprocess.run(f"echo \"{current_user}:{SECURE_PASSWORD}\" | sudo chpasswd", shell=True)
 
 # Configure misc security settings
 try:

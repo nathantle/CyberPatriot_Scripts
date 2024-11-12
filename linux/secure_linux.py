@@ -86,9 +86,57 @@ if proceed != "s":
     except Exception as e:
         print(f"Error configuring ssh\n{e}")
 
+proceed = input("Press enter to proceed to configuring security settings(s to skip)")
+if proceed != "s":
+    # Configure security settings
+    try:
+        # Sets account policy
+        # subprocess.run("sudo touch /usr/share/pam-configs/faillock", shell=True)
+        # util.write_to_file("/usr/share/pam-configs/faillock", faillock)
+
+        # Sets account policy
+        # subprocess.run("sudo touch /usr/share/pam-configs/faillock_notify", shell=True)
+        # util.write_to_file("/usr/share/pam-configs/faillock_notify", faillock_notify)
+
+        # Sets account policy
+        subprocess.run("sudo cp faillock /etc/usr/share/pam-configs", shell=True)
+        subprocess.run("sudo cp faillock_notify /etc/usr/share/pam-configs", shell=True)
+
+        # Updates pam modules
+        subprocess.run("sudo pam-auth-update", shell=True)
+
+        # Maybe locks root account sudo?
+        # process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
+        # process.wait()
+
+        # Password max age = 90
+        subprocess.run("sudo sed -i 's/^PASS_MAX_DAYS.*/PASS_MAX_DAYS\t90/' /etc/login.defs", shell=True)
+
+        # Password min age = 15
+        subprocess.run("sudo sed -i 's/^PASS_MIN_DAYS.*/PASS_MIN_DAYS\t15/' /etc/login.defs", shell=True)
+
+        # Null passwords do not authenticate
+        subprocess.run("sudo sed -i s/nullok//g /etc/pam.d/common-auth", shell=True)
+
+        # Minimum password length = 10
+        subprocess.run("sudo sed '/pam_pwquality.so/ s/$/ minlen=10")
+
+        #process = subprocess.Popen(["sudo", "sed", "-i", "s/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g", "/etc/sysctl.conf"]) # Addresss space layout randomization enabled
+        #process = subprocess.Popen(["sudo", "echo", "1", ">", "/proc/sys/net/ipv4/tcp_syncookies"]) # IPv4 TCP SYN cookies have been enabled
+        #process = subprocess.Popen(["sudo", "sed", "-i", "s/.*net.ipv4.tcp_syncookies./net.ipv4.tcp_syncookies=1*", "/etc/sysctl.d/10-network-security.conf"]) # IPv4 TCP SYN cookies have been enabled at boot
+
+        # Refreshes changes made to /etc/sysctl.conf
+        subprocess.run("sudo sysctl --system", shell=True)
+
+        # Sets secure permissions on shadow file
+        subprocess.run("sudo chmod -R 640 /etc/shadow", shell=True) 
+
+    except Exception as e:
+        print(e)
+
 # Handle Users
-proceed = input("Press enter to proceed to handle users(q to stop)")
-if proceed != "q": 
+proceed = input("Press enter to proceed to handle users(s to skip)")
+if proceed != "s": 
     try:
         # List of current users on machine
         process = subprocess.run("getent passwd | cut -d: -f1", 
@@ -179,58 +227,6 @@ if proceed != "q":
         process = subprocess.Popen(f"sudo passwd {current_user}", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         output, error = process.communicate(input=f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n")
 
-# Configure misc security settings
-try:
-    faillock = """Name: Enforce failed login attempt counter
-    Default: no
-    Priority: 0
-    Auth-Type: Primary
-    Auth:
-      [default=die] pam_faillock.so authfail
-      sufficient pam_faillock.so authsucc"""
-    
-    faillock_notify = """Name: Notify on failed login attempts
-    Default: no
-    Priority: 1024
-    Auth-Type: Primary
-    Auth:
-      requisite pam_faillock.so preauth"""
-    
-    # Sets account policy
-    subprocess.run("sudo touch /usr/share/pam-configs/faillock", shell=True)
-    util.write_to_file("/usr/share/pam-configs/faillock", faillock)
-
-    # Sets account policy
-    subprocess.run("sudo touch /usr/share/pam-configs/faillock_notify", shell=True)
-    util.write_to_file("/usr/share/pam-configs/faillock_notify", faillock_notify)
-
-    # Updates pam modules
-    subprocess.run("sudo pam-auth-update", shell=True)
-
-    # Maybe locks root account sudo?
-    # process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
-    # process.wait()
-
-    # "sudo sed -i 's/^PASS\_MAX\_DAYS.*/PASS_MAX_DAYS\t90/' /etc/login.defs"
-
-    process = subprocess.Popen(["sudo", "sed", "-i", "/nullok/d", "/etc/pam.d/common-auth"]) # Null passwords do not authenticate
-    process.wait()
-    process = subprocess.Popen(["sudo", "sed", "-i", "s/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g", "/etc/sysctl.conf"]) # Addresss space layout randomization enabled
-    process.wait()
-    process = subprocess.Popen(["sudo", "echo", "1", ">", "/proc/sys/net/ipv4/tcp_syncookies"]) # IPv4 TCP SYN cookies have been enabled
-    process.wait()
-    process = subprocess.Popen(["sudo", "sed", "-i", "s/.*net.ipv4.tcp_syncookies./net.ipv4.tcp_syncookies=1*", "/etc/sysctl.d/10-network-security.conf"]) # IPv4 TCP SYN cookies have been enabled at boot
-    process.wait()
-    # process = subprocess.Popen(["sudo", "sed", "-i"] )
-
-    process = subprocess.Popen(["sudo", "sysctl", "--system"]) # Refreshes the changes above
-    process.wait()
-    # Sets secure permissions on shadow file
-    subprocess.run("sudo chmod -R 640 /etc/shadow", shell=True) 
-
-except Exception as e:
-    print(e)
-
 # Error somehow occurs here
 '''
 # Look for unauthorized media files
@@ -248,12 +244,11 @@ try:
 except Exception as e:
     print(e)
     print("Error occured while searching for media files")
+'''
 
 # Try to delete the list of unauthorized apps
 for app in BAD_APPS:
-    process = subprocess.Popen(["sudo", "apt", "purge", app])
-    process.wait()
-process = subprocess.Popen(["sudo", "apt", "autoremove"])    
+    subprocess.run(f"sudo apt purge {app}")
+subprocess.run("sudo apt autoremove", shell=True)    
 
-'''
 print(END_MSG)

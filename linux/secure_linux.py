@@ -155,7 +155,7 @@ if proceed != "q":
 
         # Sets password for every user except default user
         process = subprocess.Popen(f"sudo passwd {current_user}", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        output, error = process.commucate(input=f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n")
+        output, error = process.communicate(input=f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n")
 
 # Configure misc security settings
 try:

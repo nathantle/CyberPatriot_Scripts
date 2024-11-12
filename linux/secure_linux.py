@@ -104,6 +104,18 @@ if proceed != "q":
         print(e)
 
     # Fills list of authorized Admins
+    # Create file for list of authorized admins
+    input("Create a new terminal and enter the authorized administrators into the auth_admins.txt file, seperated by newlines, press enter when done")
+
+    process = subprocess.run("sudo cat auth_admins.txt", 
+                             shell=True, 
+                             stdout=subprocess.PIPE, 
+                             stderr=subprocess.PIPE, 
+                             text=True)
+    auth_admins = process.stdout.splitlines()
+
+# Old code for filling authorized administrator list
+    '''
     while True:
         auth_admin = input("Enter authorized administrator(exclude yourself, type \"d\" when done, \"r\" to remove last entry): ")
         if auth_admin == "d":
@@ -114,7 +126,17 @@ if proceed != "q":
         else:
             # Adds user to list
             auth_admins.append(auth_admin)
-
+    '''
+    # Create file for list of authorized admins
+    process = subprocess.run("sudo cat auth_users.txt", 
+                             shell=True, 
+                             stdout=subprocess.PIPE, 
+                             stderr=subprocess.PIPE, 
+                             text=True)
+    auth_users = process.stdout.splitlines()
+    input("Create a new terminal and enter the authorized administrators into the auth_admins.txt file, seperated by newlines, press enter when done")
+# Old code for filling authorized user list
+    '''
     # Fills list of authorized users
     while True:
         auth_user = input("Enter authorized user(type \"d\" when done, \"r\" to remove last entry): ")
@@ -126,7 +148,7 @@ if proceed != "q":
         else:
             # Adds user to list
             auth_users.append(auth_user)
-
+    '''
     for current_user in current_users:
         # If current_user is not authorized administrator or user
         if current_user not in auth_admins and current_user not in auth_users:

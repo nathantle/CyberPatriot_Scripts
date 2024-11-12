@@ -153,6 +153,7 @@ if proceed != "s":
 
     # Fills list of authorized Admins
     # Create file for list of authorized admins
+    subprocess.run("clear", shell=True)
     input("Create a new terminal and enter the authorized administrators into the auth_admins.txt file, seperated by newlines, press enter when done")
 
     process = subprocess.run("sudo cat auth_admins.txt", 
@@ -182,6 +183,8 @@ if proceed != "s":
                              stderr=subprocess.PIPE, 
                              text=True)
     auth_users = process.stdout.splitlines()
+
+    subprocess.run("clear", shell=True)
     input("Create a new terminal and enter the authorized administrators into the auth_admins.txt file, seperated by newlines, press enter when done")
 # Old code for filling authorized user list
     '''

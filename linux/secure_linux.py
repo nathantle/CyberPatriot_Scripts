@@ -119,7 +119,7 @@ if proceed != "s":
         subprocess.run("sudo sed -i s/nullok//g /etc/pam.d/common-auth", shell=True)
 
         # Minimum password length = 10
-        subprocess.run("sudo sed '/pam_pwquality.so/ s/$/ minlen=10")
+        subprocess.run("sudo sed /pam_pwquality.so/ s/$/ minlen=10 /etc/pam.d/common-password")
 
         #process = subprocess.Popen(["sudo", "sed", "-i", "s/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g", "/etc/sysctl.conf"]) # Addresss space layout randomization enabled
         #process = subprocess.Popen(["sudo", "echo", "1", ">", "/proc/sys/net/ipv4/tcp_syncookies"]) # IPv4 TCP SYN cookies have been enabled
@@ -248,7 +248,7 @@ except Exception as e:
 
 # Try to delete the list of unauthorized apps
 for app in BAD_APPS:
-    subprocess.run(f"sudo apt purge {app}")
+    subprocess.run(f"sudo apt purge {app}", shell=True)
 subprocess.run("sudo apt autoremove", shell=True)    
 
 print(END_MSG)

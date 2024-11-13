@@ -99,8 +99,8 @@ if proceed != "s":
         # util.write_to_file("/usr/share/pam-configs/faillock_notify", faillock_notify)
 
         # Sets account policy
-        subprocess.run("sudo cp account_policy_files/faillock /etc/usr/share/pam-configs", shell=True)
-        subprocess.run("sudo cp account_policy_files/faillock_notify /etc/usr/share/pam-configs", shell=True)
+        subprocess.run("sudo cp account_policy_files/faillock /usr/share/pam-configs/faillock", shell=True)
+        subprocess.run("sudo cp account_policy_files/faillock_notify /usr/share/pam-configs/faillock_notify", shell=True)
 
         # Updates pam modules
         subprocess.run("sudo pam-auth-update", shell=True)
@@ -119,7 +119,7 @@ if proceed != "s":
         subprocess.run("sudo sed -i s/nullok//g /etc/pam.d/common-auth", shell=True)
 
         # Minimum password length = 10
-        subprocess.run("sudo sed /pam_pwquality.so/ s/$/ minlen=10 /etc/pam.d/common-password")
+        subprocess.run("sudo sed - i '/pam_pwquality.so/ s/$/ minlen=10/' /etc/pam.d/common-password", shell=True)
 
         #process = subprocess.Popen(["sudo", "sed", "-i", "s/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g", "/etc/sysctl.conf"]) # Addresss space layout randomization enabled
         #process = subprocess.Popen(["sudo", "echo", "1", ">", "/proc/sys/net/ipv4/tcp_syncookies"]) # IPv4 TCP SYN cookies have been enabled
@@ -250,8 +250,10 @@ except Exception as e:
 '''
 
 # Try to delete the list of unauthorized apps
+command = f"sudo apt purge "
 for app in BAD_APPS:
-    subprocess.run(f"sudo apt purge {app}", shell=True)
-subprocess.run("sudo apt autoremove", shell=True)    
+    command += {app} + " "
+    
+subprocess.run(command, shell=True)    
 
 print(END_MSG)

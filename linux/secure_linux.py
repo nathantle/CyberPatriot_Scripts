@@ -253,7 +253,6 @@ except Exception as e:
 command = f"sudo apt purge "
 for app in BAD_APPS:
     command += {app} + " "
-    
 subprocess.run(command, shell=True)    
 
 print(END_MSG)

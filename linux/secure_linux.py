@@ -99,8 +99,8 @@ if proceed != "s":
         # util.write_to_file("/usr/share/pam-configs/faillock_notify", faillock_notify)
 
         # Sets account policy
-        subprocess.run("sudo cp faillock /etc/usr/share/pam-configs", shell=True)
-        subprocess.run("sudo cp faillock_notify /etc/usr/share/pam-configs", shell=True)
+        subprocess.run("sudo cp account_policy_files/faillock /etc/usr/share/pam-configs", shell=True)
+        subprocess.run("sudo cp account_policy_files/faillock_notify /etc/usr/share/pam-configs", shell=True)
 
         # Updates pam modules
         subprocess.run("sudo pam-auth-update", shell=True)

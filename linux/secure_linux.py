@@ -185,7 +185,7 @@ if proceed != "s":
     auth_users = process.stdout.splitlines()
 
     subprocess.run("clear", shell=True)
-    input("Create a new terminal and enter the authorized administrators into the auth_admins.txt file, seperated by newlines, press enter when done")
+    input("Create a new terminal and enter the authorized users(not admins) into the auth_users.txt file, seperated by newlines, press enter when done")
 # Old code for filling authorized user list
     '''
     # Fills list of authorized users
@@ -252,7 +252,7 @@ except Exception as e:
 # Try to delete the list of unauthorized apps
 command = f"sudo apt purge "
 for app in BAD_APPS:
-    command += {app} + " "
+    command += f"{app} "
 subprocess.run(command, shell=True)    
 
 print(END_MSG)

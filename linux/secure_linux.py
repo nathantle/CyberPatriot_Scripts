@@ -38,6 +38,29 @@ auth_admins = []
 auth_users = []
 # Final string that stores a secure password
 SECURE_PASSWORD = "Cyb3rP@triot25!" 
+try:
+    subprocess.run(f"nano /home/{YOU}/Desktop/'Forensics Question 1'")
+    input("Press enter when finished reading forensics question")
+except:
+    print()
+
+try:
+    subprocess.run(f"nano /home/{YOU}/Desktop/'Forensics Question 2'")
+    input("Press enter when finished reading forensics question")
+except:
+    print()
+
+try:
+    subprocess.run(f"cd /home/{YOU}/Desktop/'Forensics Question 3'")
+    input("Press enter when finished reading forensics question")
+except:
+    print()
+
+try:
+    subprocess.run(f"cd /home/{YOU}/Desktop/'Forensics Question 4'")
+    input("Press enter when finished reading forensics question")
+except:
+    print()
 
 proceed = input("Press enter to proceed to updates(s to skip)")
 if proceed != "s": 

@@ -1,5 +1,5 @@
 Name: Notify on failed login attempts
-Default: no
+Default: yes
 Priority: 1024
 Auth-Type: Primary
 Auth:

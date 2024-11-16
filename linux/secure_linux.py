@@ -38,6 +38,8 @@ auth_admins = []
 auth_users = []
 # Final string that stores a secure password
 SECURE_PASSWORD = "Cyb3rP@triot25!" 
+
+'''
 try:
     subprocess.run(f"nano /home/{YOU}/Desktop/'Forensics Question 1'")
     input("Press enter when finished reading forensics question")
@@ -61,6 +63,7 @@ try:
     input("Press enter when finished reading forensics question")
 except:
     print()
+'''
 
 proceed = input("Press enter to proceed to updates(s to skip)")
 if proceed != "s": 
@@ -113,14 +116,6 @@ proceed = input("Press enter to proceed to configuring security settings(s to sk
 if proceed != "s":
     # Configure security settings
     try:
-        # Sets account policy
-        # subprocess.run("sudo touch /usr/share/pam-configs/faillock", shell=True)
-        # util.write_to_file("/usr/share/pam-configs/faillock", faillock)
-
-        # Sets account policy
-        # subprocess.run("sudo touch /usr/share/pam-configs/faillock_notify", shell=True)
-        # util.write_to_file("/usr/share/pam-configs/faillock_notify", faillock_notify)
-
         # Sets account policy
         subprocess.run("sudo cp account_policy_files/faillock /usr/share/pam-configs/faillock", shell=True)
         subprocess.run("sudo cp account_policy_files/faillock_notify /usr/share/pam-configs/faillock_notify", shell=True)

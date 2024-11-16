@@ -139,6 +139,12 @@ if proceed != "s":
         # Minimum password length = 10
         subprocess.run("sudo sed - i '/pam_pwquality.so/ s/$/ minlen=10/' /etc/pam.d/common-password", shell=True)
 
+        # IPv4 forwarding has been disabled
+        subprocess.run("sudo sed -i 's/net.ipv4.ip_forward.*/net.ipv4.ip_forward=0/' /etc/sysctl.conf", shell=True)
+
+        # IPv4 TCP SYN cookies have been enabled
+        subprocess.run("sudo sed -i 's/net.ipv4.tcp_syncookies.*/net.ipv4.tcp_syncookies=1/' /etc/sysctl.conf", shell=True)
+
         #process = subprocess.Popen(["sudo", "sed", "-i", "s/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g", "/etc/sysctl.conf"]) # Addresss space layout randomization enabled
         #process = subprocess.Popen(["sudo", "echo", "1", ">", "/proc/sys/net/ipv4/tcp_syncookies"]) # IPv4 TCP SYN cookies have been enabled
         #process = subprocess.Popen(["sudo", "sed", "-i", "s/.*net.ipv4.tcp_syncookies./net.ipv4.tcp_syncookies=1*", "/etc/sysctl.d/10-network-security.conf"]) # IPv4 TCP SYN cookies have been enabled at boot

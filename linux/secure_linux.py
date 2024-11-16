@@ -278,4 +278,8 @@ for app in BAD_APPS:
     command += f"{app} "
 subprocess.run(command, shell=True)    
 
+command = f"sudo systemctl disable "
+for bad_service in BAD_SERVICES:
+    command += f"{bad_service} "
+subprocess.run(command, shell=True)
 print(END_MSG)

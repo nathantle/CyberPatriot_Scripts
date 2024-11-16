@@ -24,7 +24,7 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
 BAD_SERVICES = ("nginx", "apache2")
 
 # Tuple of common bad apps
-BAD_APPS = ("aisleriot", "wireshark", "ophcrack", "ettercap-common", "ettercap-graphical", "ettercap-text-only", "deluge-gtk", "deluge", "gnome-mines", "gnome-mahjonng")
+BAD_APPS = ("remmina-common", "aisleriot", "wireshark", "ophcrack", "ettercap-common", "ettercap-graphical", "ettercap-text-only", "deluge-gtk", "deluge", "gnome-mines", "gnome-mahjonng")
 
 # Tuple of possible package managers
 PACKAGE_MANAGERS = ("apt", "yum", "apt-get")

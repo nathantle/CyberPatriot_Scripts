@@ -65,6 +65,7 @@ except:
     print()
 '''
 
+# Handle updates
 proceed = input("Press enter to proceed to updates(s to skip)")
 if proceed != "s": 
     try:
@@ -148,12 +149,14 @@ if proceed != "s":
         # Address space layout randomization has been enabled
         subprocess.run("sudo sed -i 's/.*kernel.randomize_va_space.*/kernel.randomize_va_space=2/g' /etc/sysctl.conf", shell=True) # Addresss space layout randomization enabled
 
+        # Sudo requires authentication
+        subprocess.run("sudo sed -i 's/!authenticate/authenticate/' /etc/sudoers", shell=True)
+
         # Refreshes changes made to /etc/sysctl.conf
         subprocess.run("sudo sysctl --system", shell=True)
 
         # Sets secure permissions on shadow file
         subprocess.run("sudo chmod -R 640 /etc/shadow", shell=True) 
-
     except Exception as e:
         print(e)
 

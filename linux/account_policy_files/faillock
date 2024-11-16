@@ -1,5 +1,5 @@
 Name: Enforce failed login attempt counter
-Default: yes
+Default: no
 Priority: 0
 Auth-Type: Primary
 Auth:

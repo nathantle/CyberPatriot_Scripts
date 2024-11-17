@@ -13,7 +13,7 @@ Security Issues not automated yet:
 - SSH Root login disabled
 - Password and account policies
 '''
-# Tuple of default users that should not have changes made to
+# Tuple of default users that should not be modified
 DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", "sync", "games", "man", "lp", 
                  "mail", "news", "uucp", "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd.network", 
                  "systemd-resolve", "messagebus", "systemd-timesync", "syslog", "_apt", "tss", "uuidd", "avahi-autoipd", 
@@ -30,7 +30,7 @@ BAD_APPS = ("nginx", "remmina-common", "aisleriot", "wireshark", "ophcrack", "et
 # Tuple of possible package managers
 PACKAGE_MANAGERS = ("apt", "yum", "apt-get")
 
-# String that stores the user account that should not have changes made to
+# String that stores the user account that should not be modified
 YOU = input("Enter your username: ").lower()
 
 SSH_CRIT_SERV = input("Is ssh a critical service? (y/n) ").lower()
@@ -65,7 +65,7 @@ if proceed != "s":
         print(e)
 
 # Configure Firewall
-proceed = input("Press enter to proceed to configuring firewall(s to skip)")
+proceed = input("Press enter to proceed to configuring firewall(s to skip)").lower()
 if proceed != "s": 
     try:
         # Enables UFW

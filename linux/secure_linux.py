@@ -107,6 +107,9 @@ if proceed != "s":
         # Update pam modules
         subprocess.run("sudo pam-auth-update", shell=True)
 
+        # Install libpam-pwquality
+        subprocess.run("sudo apt install libpam-pwquality", shell=True)
+
         # Sets account policy
         subprocess.run("sudo cp account_policy_files/faillock /usr/share/pam-configs/faillock", shell=True)
         subprocess.run("sudo cp account_policy_files/faillock_notify /usr/share/pam-configs/faillock_notify", shell=True)

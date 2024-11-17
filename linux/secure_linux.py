@@ -24,13 +24,22 @@ DEFAULT_USERS = ("lightdm", "systemd-coredump", "root", "daemon", "bin", "sys", 
 BAD_SERVICES = ("nginx", "apache2")
 
 # Tuple of common bad apps
-BAD_APPS = ("remmina-common", "aisleriot", "wireshark", "ophcrack", "ettercap-common", "ettercap-graphical", "ettercap-text-only", "deluge-gtk", "deluge", "gnome-mines", "gnome-mahjonng")
+BAD_APPS = ("nginx", "remmina-common", "aisleriot", "wireshark", "ophcrack", "ettercap-common", "ettercap-graphical", 
+            "ettercap-text-only", "deluge-gtk", "deluge", "gnome-mines", "gnome-mahjonng")
 
 # Tuple of possible package managers
 PACKAGE_MANAGERS = ("apt", "yum", "apt-get")
 
 # String that stores the user account that should not have changes made to
 YOU = input("Enter your username: ").lower()
+
+SSH_CRIT_SERV = input("Is ssh a critical service? (y/n) ").lower()
+FTP_CRIT_SERV = input("Is FTP a critical service? (y/n)" ).lower()
+
+if FTP_CRIT_SERV == "n":
+    subprocess.run("sudo purge vsftpd", shell=True)
+    subprocess.run("sudo systemctl stop vsftpd", shell=True)
+    subprocess.run("sudo systemctl disable vsftpd", shell=True)
 
 # Declare lists to store current users, authorized admins and users
 current_users = []
@@ -88,9 +97,8 @@ if proceed != "s":
         # Enables UFW
         subprocess.run("sudo ufw enable", shell=True)
 
-        ssh_crit_serv = input("Is SSH a critical service (y/n)")
-        if ssh_crit_serv.lower() == "y":
-            # Allows SSH traffic
+        if SSH_CRIT_SERV == "y":
+            # Allow SSH traffic
             subprocess.run("sudo ufw allow ssh", shell=True)
     except Exception as e:
         print("Error configuring firewall")
@@ -111,7 +119,7 @@ if proceed != "s":
         subprocess.run("sudo systemctl start ssh", shell=True)
 
         # Disable SSH root login
-        subprocess.run("sudo sed -i 's/^PermitRootLogin .*/PermitRootLogin no/' /etc/ssh/sshd_config", shell=True)
+        subprocess.run("sudo sed -i 's/^PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config", shell=True)
 
         # Restart SSH
         subprocess.run("sudo systemctl restart ssh", shell=True)
@@ -143,7 +151,7 @@ if proceed != "s":
         subprocess.run("sudo sed -i s/nullok//g /etc/pam.d/common-auth", shell=True)
 
         # Minimum password length = 10
-        subprocess.run("sudo sed - i '/pam_pwquality.so/ s/$/ minlen=10/' /etc/pam.d/common-password", shell=True)
+        subprocess.run("sudo sed -i '/pam_pwquality.so/ s/$/ minlen=10/' /etc/pam.d/common-password", shell=True)
 
         # IPv4 forwarding has been disabled
         subprocess.run("sudo sed -i 's/net.ipv4.ip_forward.*/net.ipv4.ip_forward=0/' /etc/sysctl.conf", shell=True)

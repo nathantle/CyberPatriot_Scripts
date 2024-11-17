@@ -100,8 +100,13 @@ if proceed != "s":
 proceed = input("Press enter to proceed to configuring ssh(s to skip)")
 if proceed != "s": 
     try:
-        # Install/update and start ssh service
+        # Install/update ssh
+        subprocess.run("sudo apt purge ssh", shell=True)
+        subprocess.run("sudo apt purge openssh-server", shell=True)
         subprocess.run("sudo apt install ssh", shell=True)
+        subprocess.run("sudo apt install openssh-server", shell=True)
+
+        # Start/enable ssh service
         subprocess.run("sudo systemctl enable ssh", shell=True)
         subprocess.run("sudo systemctl start ssh", shell=True)
 
@@ -155,6 +160,9 @@ if proceed != "s":
         # Refreshes changes made to /etc/sysctl.conf
         subprocess.run("sudo sysctl --system", shell=True)
 
+        # Refreshes changes made to pam
+        subprocess.run("sudo pam-auth-update", shell=True)
+
         # Sets secure permissions on shadow file
         subprocess.run("sudo chmod -R 640 /etc/shadow", shell=True) 
     except Exception as e:
@@ -177,8 +185,6 @@ if proceed != "s":
     except Exception as e:
         print(e)
 
-    # Fills list of authorized Admins
-    # Create file for list of authorized admins
     subprocess.run("clear", shell=True)
     input("Create a new terminal and enter the authorized administrators into the auth_admins.txt file, seperated by newlines, press enter when done")
 
@@ -187,45 +193,20 @@ if proceed != "s":
                              stdout=subprocess.PIPE, 
                              stderr=subprocess.PIPE, 
                              text=True)
+    # Fill list of authorized administrators
     auth_admins = process.stdout.splitlines()
 
-# Old code for filling authorized administrator list
-    '''
-    while True:
-        auth_admin = input("Enter authorized administrator(exclude yourself, type \"d\" when done, \"r\" to remove last entry): ")
-        if auth_admin == "d":
-            break
-        elif auth_admin == "r" and auth_admins:
-            # Removes last entry
-            auth_admins.pop()
-        else:
-            # Adds user to list
-            auth_admins.append(auth_admin)
-    '''
-    # Create file for list of authorized admins
     process = subprocess.run("sudo cat auth_users.txt", 
                              shell=True, 
                              stdout=subprocess.PIPE, 
                              stderr=subprocess.PIPE, 
                              text=True)
+    # Fill list of authorized users
     auth_users = process.stdout.splitlines()
 
     subprocess.run("clear", shell=True)
     input("Create a new terminal and enter the authorized users(not admins) into the auth_users.txt file, seperated by newlines, press enter when done")
-# Old code for filling authorized user list
-    '''
-    # Fills list of authorized users
-    while True:
-        auth_user = input("Enter authorized user(type \"d\" when done, \"r\" to remove last entry): ")
-        if auth_user == "d":
-            break
-        elif auth_user == "r" and auth_users:
-            # Removes last entry
-            auth_users.pop()
-        else:
-            # Adds user to list
-            auth_users.append(auth_user)
-    '''
+
     for current_user in current_users:
         # If current_user is not authorized administrator or user
         if current_user not in auth_admins and current_user not in auth_users:
@@ -275,7 +256,7 @@ except Exception as e:
     print("Error occured while searching for media files")
 '''
 
-# Try to delete the list of unauthorized apps
+# Delete the list of unauthorized apps
 command = f"sudo apt purge "
 for app in BAD_APPS:
     command += f"{app} "
@@ -285,4 +266,5 @@ command = f"sudo systemctl disable "
 for bad_service in BAD_SERVICES:
     command += f"{bad_service} "
 subprocess.run(command, shell=True)
+
 print(END_MSG)

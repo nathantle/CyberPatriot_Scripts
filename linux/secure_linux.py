@@ -117,10 +117,6 @@ if proceed != "s":
         # Updates pam modules
         subprocess.run("sudo pam-auth-update", shell=True)
 
-        # Maybe locks root account sudo?
-        # process = subprocess.Popen(["sudo", "passwd", "-l" "root"]) # Root password is no longer blank
-        # process.wait()
-
         # Password max age = 90
         subprocess.run("sudo sed -i 's/^PASS_MAX_DAYS.*/PASS_MAX_DAYS\t90/' /etc/login.defs", shell=True)
 
@@ -153,6 +149,9 @@ if proceed != "s":
 
         # Sets secure permissions on shadow file
         subprocess.run("sudo chmod -R 640 /etc/shadow", shell=True) 
+
+        # Locks root account
+        subprocess.run("sudo passwd -l root", shell=True)
     except Exception as e:
         print(e)
 

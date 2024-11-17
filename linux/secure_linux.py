@@ -198,8 +198,7 @@ if proceed != "s":
         # If current_user is not authorized administrator or user
         if current_user not in auth_admins and current_user not in auth_users:
             try:
-                print("Deleting user " + current_user)
-                # Deleting user
+                print(f"Deleting user {current_user}")
                 subprocess.run(f"sudo userdel {current_user}", shell=True)
                 current_users.remove(current_user)
             except:
@@ -210,12 +209,14 @@ if proceed != "s":
         if admin and current_user not in auth_admins:
             try:
                 # Make user not administrator
+                print(f"Removing {current_user} from group sudo")
                 subprocess.run(f"sudo gpasswd -d {current_user} sudo", shell=True)
             except:
                 print("Error deleting user from group sudo")
         elif not admin and current_user in auth_admins:
             try:
                 # Make user administrator
+                print(f"Adding {current_user} to group sudo")
                 subprocess.run(f"sudo gpasswd -a {current_user} sudo", shell=True)
             except:
                 print("Error adding user to group sudo")
@@ -224,35 +225,14 @@ if proceed != "s":
         process = subprocess.Popen(f"sudo passwd {current_user}", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         output, error = process.communicate(input=f"{SECURE_PASSWORD}\n{SECURE_PASSWORD}\n")
 
-# Error somehow occurs here
-'''
-# Look for unauthorized media files
 try:
-    process = subprocess.Popen(["sudo", "locate", "*.mp3"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    process.wait()
-    output, error = process.communicate()
-    file_paths = output.splitlines()
+    process = subprocess.run("sudo locate -name '*.mp3' /home", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    file_paths = process.stdout.splitlines()
 
     for file_path in file_paths:
-        delete = input("Do you want to delete the file @ " + file_path + "(y/n) ").lower()
+        delete = input(f"Do you want to delete the file @  {file_path}? (y/n)").lower()
         if delete == "y":
-            process = subprocess.Popen(["sudo", "rm", file_path])
-            process.wait()
-except Exception as e:
-    print(e)
-    print("Error occured while searching for media files")
-'''
-
-try:
-    subprocess.run("sudo locate -name '*.mp3' /home", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output, error = process.communicate()
-
-    file_paths = output.splitlines()
-
-    for file in file_paths:
-        delete = input(f"Do you want to delete the file @  {file}? (y/n)").lower()
-        if delete == "y":
-            subprocess.run(f"sudo rm {file}", shell=True)
+            subprocess.run(f"sudo rm {file_path}", shell=True)
 except Exception as e:
     print(e)
 

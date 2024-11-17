@@ -48,32 +48,6 @@ auth_users = []
 # Final string that stores a secure password
 SECURE_PASSWORD = "Cyb3rP@triot25!" 
 
-'''
-try:
-    subprocess.run(f"nano /home/{YOU}/Desktop/'Forensics Question 1'")
-    input("Press enter when finished reading forensics question")
-except:
-    print()
-
-try:
-    subprocess.run(f"nano /home/{YOU}/Desktop/'Forensics Question 2'")
-    input("Press enter when finished reading forensics question")
-except:
-    print()
-
-try:
-    subprocess.run(f"cd /home/{YOU}/Desktop/'Forensics Question 3'")
-    input("Press enter when finished reading forensics question")
-except:
-    print()
-
-try:
-    subprocess.run(f"cd /home/{YOU}/Desktop/'Forensics Question 4'")
-    input("Press enter when finished reading forensics question")
-except:
-    print()
-'''
-
 # Handle updates
 proceed = input("Press enter to proceed to updates(s to skip)")
 if proceed != "s": 
@@ -263,6 +237,19 @@ except Exception as e:
     print(e)
     print("Error occured while searching for media files")
 '''
+
+try:
+    subprocess.run("sudo locate -name '*.mp3' /home", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = process.communicate()
+
+    file_paths = output.splitlines()
+
+    for file in file_paths:
+        delete = input(f"Do you want to delete the file @  {file}? (y/n)").lower()
+        if delete == "y":
+            subprocess.run(f"sudo rm {file}", shell=True)
+except Exception as e:
+    print(e)
 
 # Delete the list of unauthorized apps
 command = f"sudo apt purge "

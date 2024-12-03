@@ -37,7 +37,7 @@ SSH_CRIT_SERV = input("Is ssh a critical service? (y/n) ").lower()
 FTP_CRIT_SERV = input("Is FTP a critical service? (y/n)" ).lower()
 
 if FTP_CRIT_SERV == "n":
-    subprocess.run("sudo purge vsftpd", shell=True)
+    subprocess.run("sudo apt purge vsftpd", shell=True)
     subprocess.run("sudo systemctl stop vsftpd", shell=True)
     subprocess.run("sudo systemctl disable vsftpd", shell=True)
 
@@ -237,14 +237,11 @@ except Exception as e:
     print(e)
 
 # Delete the list of unauthorized apps
-command = f"sudo apt purge "
 for app in BAD_APPS:
-    command += f"{app} "
-subprocess.run(command, shell=True)    
+    subprocess.run(f"sudo apt purge {app}")
 
-command = f"sudo systemctl disable "
 for bad_service in BAD_SERVICES:
-    command += f"{bad_service} "
-subprocess.run(command, shell=True)
+    subprocess.run(f"sudo systemctl disable {bad_service}")
+    subprocess.run(f"sudo apt purge {bad_service}")
 
 print(END_MSG)

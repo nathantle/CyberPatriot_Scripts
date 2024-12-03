@@ -238,10 +238,10 @@ except Exception as e:
 
 # Delete the list of unauthorized apps
 for app in BAD_APPS:
-    subprocess.run(f"sudo apt purge {app}")
+    subprocess.run(f"sudo apt purge {app}", shell=True)
 
 for bad_service in BAD_SERVICES:
-    subprocess.run(f"sudo systemctl disable {bad_service}")
-    subprocess.run(f"sudo apt purge {bad_service}")
+    subprocess.run(f"sudo systemctl disable {bad_service}", shell=True)
+    subprocess.run(f"sudo apt purge {bad_service}", shell=True)
 
 print(END_MSG)
